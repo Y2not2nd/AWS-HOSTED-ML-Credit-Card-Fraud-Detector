@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: model-promotion-sa
+  namespace: ml-inference
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::581212334853:role/promotion-irsa-role

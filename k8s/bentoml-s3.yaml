@@ -1,0 +1,4 @@
+stores:
+  models:
+    type: s3
+    uri: s3://mlops-model-store-prod/bentoml

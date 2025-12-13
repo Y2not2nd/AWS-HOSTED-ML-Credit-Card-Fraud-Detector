@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bentoml-s3-test
+  namespace: ml-inference
+spec:
+  serviceAccountName: credit-fraud-inference-green-sa
+  restartPolicy: Never
+  containers:
+    - name: bentoml
+      image: python:3.11-slim
+      env:
+        - name: BENTOML_CONFIG
+          value: /config/bentoml.yaml
+      volumeMounts:
+        - name: bentoml-config
+          mountPath: /config
+      command:
+        - sh
+        - -c
+        - |
+          pip install --no-cache-dir bentoml==1.3.9 && sleep 3600
+  volumes:
+    - name: bentoml-config
+      configMap:
+        name: bentoml-s3-config
