@@ -26,6 +26,13 @@ with DAG(
         # IRSA-enabled ServiceAccount with S3 write access
         service_account_name="model-promotion-sa",
 
+        # 🔑 CRITICAL FIX:
+        # Force Airflow to use in-cluster Kubernetes credentials
+        in_cluster=True,
+
+        # Keep pod around if it fails so we can inspect logs
+        is_delete_operator_pod=False,
+
         # Image that contains build_bento.py + deps
         image="581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:model-promoter",
         image_pull_policy="Always",
