@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  namespace: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      serviceAccountName: mlflow
+      containers:
+        - name: mlflow
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:mlflow-postgres
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MLFLOW_BACKEND_STORE_URI
+              value: postgresql://postgres:postgres@airflow-postgresql.airflow:5432/mlflow
+            - name: MLFLOW_ARTIFACT_ROOT
+              value: s3://bin2ml-mlflow-artifacts-eu-west-1/
+          command:
+            - mlflow
+            - server
+            - "--host=0.0.0.0"
+            - "--port=5000"

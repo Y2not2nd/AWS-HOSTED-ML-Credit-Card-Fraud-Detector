@@ -1,0 +1,41 @@
+﻿config:
+  logging:
+    worker_log_server_host: airflow-worker
+    worker_log_server_port: 8793
+dags:
+  gitSync:
+    branch: main
+    enabled: true
+    repo: https://github.com/Y2not2nd/AWS-HOSTED-ML-Credit-Card-Fraud-Detector.git
+    subPath: dags
+global:
+  storageClass: gp3
+migrateDatabaseJob:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+postgresql:
+  image:
+    pullPolicy: IfNotPresent
+    registry: docker.io
+    repository: postgres
+    tag: "15"
+  persistence:
+    enabled: true
+    size: 10Gi
+redis:
+  persistence:
+    enabled: true
+    size: 5Gi
+triggerer:
+  persistence:
+    enabled: true
+    size: 5Gi
+workers:
+  persistence:
+    enabled: true
+    size: 5Gi

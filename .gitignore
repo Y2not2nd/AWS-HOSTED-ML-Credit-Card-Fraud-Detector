@@ -1,0 +1,29 @@
+# ==============================
+# Terraform
+# ==============================
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Local Terraform variables and secrets
+terraform.tfvars
+*.auto.tfvars
+
+# Terraform plan files
+*.tfplan
+
+# ==============================
+# Kubernetes local tooling
+# ==============================
+kind-config.yaml
+kubeconfig*
+*.kubeconfig
+
+# ==============================
+# Docker
+# ==============================
+.dockerignore
+**/.env
+.env
+  

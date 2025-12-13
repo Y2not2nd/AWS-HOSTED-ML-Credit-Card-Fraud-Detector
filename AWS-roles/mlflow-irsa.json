@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadTrainingDataObject",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::bin2ml-ml-data-eu-west-1/credit-card-fraud/raw/creditcard.csv"
+    },
+    {
+      "Sid": "ListBucketForPrefixResolution",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::bin2ml-ml-data-eu-west-1",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "credit-card-fraud/raw/*"
+          ]
+        }
+      }
+    }
+  ]
+}

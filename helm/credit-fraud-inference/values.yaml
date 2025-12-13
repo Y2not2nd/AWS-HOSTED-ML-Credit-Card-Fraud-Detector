@@ -1,0 +1,36 @@
+replicaCount: 1
+
+image:
+  repository: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference
+  tag: backend-v1
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3000
+
+containerPort: 3000
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+ingress:
+  enabled: true
+  className: nginx
+
+  path: /predict
+  pathType: Prefix
+
+  # Optional host routing, leave empty to match any host
+  hosts: []
+  # Example:
+  # hosts:
+  #   - host: api.yourdomain.com
+  #     paths:
+  #       - path: /predict
+  #         pathType: Prefix
