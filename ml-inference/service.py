@@ -1,3 +1,4 @@
+import os
 import bentoml
 import pandas as pd
 from bentoml.io import PandasDataFrame, JSON
@@ -50,9 +51,6 @@ def validate_input_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def normalize_scores(scores: np.ndarray) -> np.ndarray:
-    """
-    Converts model outputs into a [0,1] range for risk scoring.
-    """
     min_s, max_s = scores.min(), scores.max()
     if min_s == max_s:
         return np.zeros_like(scores)
@@ -69,11 +67,14 @@ def assign_risk_level(score: float) -> str:
 
 
 # =========================
-# Load model runner
+# Load model runner (UPDATED)
 # =========================
-model_runner = bentoml.sklearn.get(
-    "credit_card_fraud_classifier:latest"
-).to_runner()
+MODEL_REF = os.environ.get(
+    "BENTOML_MODEL_REF",
+    "credit_card_fraud_classifier:latest",  # safe fallback
+)
+
+model_runner = bentoml.sklearn.get(MODEL_REF).to_runner()
 
 
 # =========================
