@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: irsa-debug
+  namespace: ml-inference
+spec:
+  serviceAccountName: credit-fraud-inference-green-sa
+  restartPolicy: Never
+  containers:
+    - name: awscli
+      image: amazon/aws-cli:2.15.0
+      command: ["sleep", "3600"]
