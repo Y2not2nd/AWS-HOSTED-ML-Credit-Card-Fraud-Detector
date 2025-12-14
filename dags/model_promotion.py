@@ -29,11 +29,15 @@ with DAG(
         # Force in-cluster Kubernetes auth
         in_cluster=True,
 
-        # Keep pod for debugging if it fails
+        # Keep pod around for debugging if it fails
         is_delete_operator_pod=False,
 
-        # Promotion image
-        image="581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:model-promoter",
+        # 🔒 DIGEST-PINNED promotion image (NO TAG RESOLUTION)
+        image=(
+            "581212334853.dkr.ecr.eu-west-1.amazonaws.com/"
+            "yas-ml-inference@sha256:"
+            "b42926ba9bf233e233f393d51596b2e7aa3dbfba7b604fec70acd51823ad162d"
+        ),
         image_pull_policy="Always",
 
         get_logs=True,
@@ -44,8 +48,7 @@ with DAG(
             # BentoML model store config
             "BENTOML_CONFIG": "/config/bentoml.yaml",
 
-            # 🔑 CRITICAL FIX
-            # Point promotion job to the real MLflow service
+            # MLflow tracking server
             "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:5000",
         },
 
