@@ -2,7 +2,6 @@ from datetime import datetime
 
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.pod import KubernetesPodOperator
-from kubernetes.client import V1Volume, V1ConfigMapVolumeSource, V1VolumeMount
 
 DAG_ID = "credit_card_model_promotion"
 
@@ -32,11 +31,10 @@ with DAG(
         # Keep pod around for debugging if it fails
         is_delete_operator_pod=False,
 
-        # 🔒 DIGEST-PINNED promotion image (NO TAG RESOLUTION)
+        # Promotion image
         image=(
             "581212334853.dkr.ecr.eu-west-1.amazonaws.com/"
             "yas-ml-inference:model-promoter-v3"
-            
         ),
         image_pull_policy="Always",
 
@@ -45,28 +43,19 @@ with DAG(
 
         # Environment variables injected into the container
         env_vars={
-            "BENTOML_CONFIG": "/config/bentoml.yaml",
-            "BENTOML_HOME": "/tmp/bentoml",
+            # MLflow
             "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:5000",
+
+            # REQUIRED for promotion upload
+            "BENTO_S3_BUCKET": "mlops-model-store-prod",
+
+            # Optional but recommended for structure
+            "BENTO_S3_PREFIX": "bentoml/models",
+
+            # AWS region (IRSA already injects credentials)
+            "AWS_REGION": "eu-west-1",
+            "AWS_DEFAULT_REGION": "eu-west-1",
         },
-
-        # Mount BentoML config from ConfigMap
-        volumes=[
-            V1Volume(
-                name="bentoml-config",
-                config_map=V1ConfigMapVolumeSource(
-                    name="bentoml-s3-config"
-                ),
-            )
-        ],
-
-        volume_mounts=[
-            V1VolumeMount(
-                name="bentoml-config",
-                mount_path="/config",
-                read_only=True,
-            )
-        ],
 
         # Promotion script
         cmds=["python", "-u", "/app/promotion/build_bento.py"],
