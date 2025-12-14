@@ -35,7 +35,7 @@ with DAG(
         # 🔒 DIGEST-PINNED promotion image (NO TAG RESOLUTION)
         image=(
             "581212334853.dkr.ecr.eu-west-1.amazonaws.com/"
-            "yas-ml-inference:model-promoter-v2"
+            "yas-ml-inference:model-promoter-v3"
             
         ),
         image_pull_policy="Always",
