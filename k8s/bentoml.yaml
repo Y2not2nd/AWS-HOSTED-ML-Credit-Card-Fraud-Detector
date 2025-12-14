@@ -5,4 +5,3 @@ model_store:
   options:
     bucket: mlops-model-store-prod
     prefix: bentoml
-
