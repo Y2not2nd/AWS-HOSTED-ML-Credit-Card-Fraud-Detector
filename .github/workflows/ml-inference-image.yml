@@ -1,0 +1,65 @@
+name: ml-inference-image
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-west-1
+  ECR_REPOSITORY: yas-ml-inference
+  MODEL_BUCKET: mlops-model-store-prod
+  CANDIDATE_KEY: bentoml/models/CANDIDATE
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::581212334853:role/ml-platform-github-actions
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Read promoted model pointer
+        id: model
+        run: |
+          aws s3 cp s3://${MODEL_BUCKET}/${CANDIDATE_KEY} candidate.json
+
+          MODEL_NAME=$(jq -r '.model' candidate.json)
+          MODEL_TAG=$(jq -r '.tag' candidate.json)
+          BENTO_PREFIX=$(jq -r '.bento_s3_prefix' candidate.json)
+
+          SHORT_TAG=${MODEL_TAG#*:}
+          IMAGE_TAG="credit-fraud-${SHORT_TAG}"
+
+          echo "model_name=${MODEL_NAME}" >> $GITHUB_OUTPUT
+          echo "model_tag=${MODEL_TAG}" >> $GITHUB_OUTPUT
+          echo "bento_prefix=${BENTO_PREFIX}" >> $GITHUB_OUTPUT
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Build inference image
+        run: |
+          docker build \
+            --build-arg BENTO_S3_BUCKET=${MODEL_BUCKET} \
+            --build-arg BENTO_S3_PREFIX=${{ steps.model.outputs.bento_prefix }} \
+            -t ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }} \
+            -t ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7} \
+            inference/
+
+      - name: Push image to ECR
+        run: |
+          docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}
+          docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7}

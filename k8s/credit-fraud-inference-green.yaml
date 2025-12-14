@@ -18,13 +18,20 @@ spec:
         app: credit-fraud-inference
         color: green
     spec:
+      serviceAccountName: credit-fraud-inference-green-sa
       containers:
         - name: inference
-          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-v2
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
           imagePullPolicy: Always
           env:
-            - name: BENTOML_MODEL_REF
-              value: "credit_card_fraud_classifier:CANDIDATE"
+            - name: BENTO_S3_BUCKET
+              value: mlops-model-store-prod
+            - name: BENTO_S3_PREFIX
+              value: bentoml/models
+            - name: BENTOML_MODEL_STAGE
+              value: CANDIDATE
+            - name: BENTOML_HOME
+              value: /tmp/bentoml
           ports:
             - containerPort: 3000
           readinessProbe:
@@ -37,4 +44,3 @@ spec:
               port: 3000
             initialDelaySeconds: 30
             periodSeconds: 30
-      serviceAccountName: credit-fraud-inference-green-sa

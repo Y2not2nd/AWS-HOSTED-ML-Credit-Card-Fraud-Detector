@@ -14,7 +14,7 @@ import boto3
 
 def upload_directory_to_s3(local_dir: Path, bucket: str, prefix: str):
     """
-    Recursively upload a directory to S3.
+    Recursively upload a directory to S3, preserving structure.
     """
     s3 = boto3.client("s3")
 
@@ -38,8 +38,10 @@ def write_stage_pointer(
     roc_auc: float,
 ):
     """
-    Write a stage pointer object to S3, for example CANDIDATE, PROD.
-    The pointer key will be: {prefix_base}/{stage}
+    Write a stage pointer (e.g. CANDIDATE, PROD) to S3.
+
+    Pointer path:
+      s3://{bucket}/{prefix_base}/{STAGE}
     """
     s3 = boto3.client("s3")
 
@@ -52,8 +54,8 @@ def write_stage_pointer(
         "bento_s3_prefix": f"{prefix_base}/{tag}",
         "run_id": run_id,
         "roc_auc": roc_auc,
-        "promoted_at": datetime.utcnow().isoformat() + "Z",
         "stage": stage_upper,
+        "promoted_at": datetime.utcnow().isoformat() + "Z",
     }
 
     s3.put_object(
@@ -63,7 +65,7 @@ def write_stage_pointer(
         ContentType="application/json",
     )
 
-    print(f"Wrote {stage_upper} pointer to s3://{bucket}/{pointer_key}")
+    print(f"[INFO] Wrote {stage_upper} pointer to s3://{bucket}/{pointer_key}")
 
 
 def main():
@@ -80,7 +82,6 @@ def main():
         raise RuntimeError("BENTO_S3_BUCKET must be set")
 
     s3_prefix_base = os.environ.get("BENTO_S3_PREFIX", "bentoml/models")
-
     stage = os.environ.get("BENTO_MODEL_STAGE", "CANDIDATE")
 
     # ---------- ARGS ----------
@@ -89,7 +90,7 @@ def main():
     parser.add_argument("--metric-threshold", type=float, required=True)
     args = parser.parse_args()
 
-    # ---------- GET EXP ----------
+    # ---------- GET BEST RUN ----------
     exp = client.get_experiment_by_name(args.experiment_name)
     if not exp:
         raise RuntimeError(f"Experiment not found: {args.experiment_name}")
@@ -113,8 +114,8 @@ def main():
         raise RuntimeError(f"Threshold not met: {roc_auc} < {args.metric_threshold}")
 
     run_id = best_run.info.run_id
-    print("Using run:", run_id)
-    print("roc_auc:", roc_auc)
+    print("[INFO] Using run:", run_id)
+    print("[INFO] roc_auc:", roc_auc)
 
     # ---------- DOWNLOAD ARTIFACT ----------
     with tempfile.TemporaryDirectory() as tmp:
@@ -124,7 +125,7 @@ def main():
             dst_path=tmp,
         )
 
-        print("Downloaded model to:", local_path)
+        print("[INFO] Downloaded model to:", local_path)
 
         model = joblib.load(local_path)
 
@@ -140,16 +141,17 @@ def main():
         )
 
         tag = str(saved.tag)
-        print("Saved BentoML model:", tag)
-
-        # ---------- LOCATE MODEL DIRECTORY ----------
         model_dir = Path(saved.path)
-        if not model_dir.exists():
-            raise RuntimeError("Saved BentoML model path not found")
 
-        # ---------- UPLOAD TO S3 ----------
+        print("[INFO] Saved BentoML model:", tag)
+        print("[INFO] Model directory:", model_dir)
+
+        if not model_dir.exists():
+            raise RuntimeError("Saved BentoML model directory not found")
+
+        # ---------- UPLOAD MODEL DIRECTORY ----------
         s3_prefix = f"{s3_prefix_base}/{tag}"
-        print(f"Uploading BentoML model to s3://{s3_bucket}/{s3_prefix}")
+        print(f"[INFO] Uploading model to s3://{s3_bucket}/{s3_prefix}")
 
         upload_directory_to_s3(
             local_dir=model_dir,
@@ -157,7 +159,7 @@ def main():
             prefix=s3_prefix,
         )
 
-        print("Upload complete")
+        print("[INFO] Upload complete")
 
         # ---------- WRITE STAGE POINTER ----------
         write_stage_pointer(
@@ -170,7 +172,7 @@ def main():
             roc_auc=roc_auc,
         )
 
-        print("Promotion finished successfully")
+        print("[INFO] Promotion finished successfully")
 
 
 if __name__ == "__main__":
