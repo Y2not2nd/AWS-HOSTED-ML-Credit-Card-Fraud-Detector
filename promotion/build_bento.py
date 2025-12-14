@@ -28,20 +28,23 @@ def upload_directory_to_s3(local_dir: Path, bucket: str, prefix: str):
             )
 
 
-def write_candidate_pointer(
+def write_stage_pointer(
     bucket: str,
     prefix_base: str,
+    stage: str,
     model_name: str,
     tag: str,
     run_id: str,
     roc_auc: float,
 ):
     """
-    Write a CANDIDATE pointer object to S3.
+    Write a stage pointer object to S3, for example CANDIDATE, PROD.
+    The pointer key will be: {prefix_base}/{stage}
     """
     s3 = boto3.client("s3")
 
-    pointer_key = f"{prefix_base}/CANDIDATE"
+    stage_upper = stage.upper()
+    pointer_key = f"{prefix_base}/{stage_upper}"
 
     payload = {
         "model": model_name,
@@ -50,6 +53,7 @@ def write_candidate_pointer(
         "run_id": run_id,
         "roc_auc": roc_auc,
         "promoted_at": datetime.utcnow().isoformat() + "Z",
+        "stage": stage_upper,
     }
 
     s3.put_object(
@@ -59,10 +63,7 @@ def write_candidate_pointer(
         ContentType="application/json",
     )
 
-    print(
-        f"Wrote CANDIDATE pointer to "
-        f"s3://{bucket}/{pointer_key}"
-    )
+    print(f"Wrote {stage_upper} pointer to s3://{bucket}/{pointer_key}")
 
 
 def main():
@@ -78,9 +79,9 @@ def main():
     if not s3_bucket:
         raise RuntimeError("BENTO_S3_BUCKET must be set")
 
-    s3_prefix_base = os.environ.get(
-        "BENTO_S3_PREFIX", "bentoml/models"
-    )
+    s3_prefix_base = os.environ.get("BENTO_S3_PREFIX", "bentoml/models")
+
+    stage = os.environ.get("BENTO_MODEL_STAGE", "CANDIDATE")
 
     # ---------- ARGS ----------
     parser = argparse.ArgumentParser()
@@ -109,9 +110,7 @@ def main():
         raise RuntimeError("roc_auc metric missing")
 
     if roc_auc < args.metric_threshold:
-        raise RuntimeError(
-            f"Threshold not met: {roc_auc} < {args.metric_threshold}"
-        )
+        raise RuntimeError(f"Threshold not met: {roc_auc} < {args.metric_threshold}")
 
     run_id = best_run.info.run_id
     print("Using run:", run_id)
@@ -129,7 +128,7 @@ def main():
 
         model = joblib.load(local_path)
 
-        # ---------- SAVE TO BENTOML (LOCAL ONLY) ----------
+        # ---------- SAVE TO BENTOML ----------
         saved = bentoml.sklearn.save_model(
             name="credit_fraud_model",
             model=model,
@@ -144,30 +143,27 @@ def main():
         print("Saved BentoML model:", tag)
 
         # ---------- LOCATE MODEL DIRECTORY ----------
-        model_store = Path(saved.path)
-        if not model_store.exists():
+        model_dir = Path(saved.path)
+        if not model_dir.exists():
             raise RuntimeError("Saved BentoML model path not found")
 
         # ---------- UPLOAD TO S3 ----------
         s3_prefix = f"{s3_prefix_base}/{tag}"
-
-        print(
-            f"Uploading BentoML model to "
-            f"s3://{s3_bucket}/{s3_prefix}"
-        )
+        print(f"Uploading BentoML model to s3://{s3_bucket}/{s3_prefix}")
 
         upload_directory_to_s3(
-            local_dir=model_store,
+            local_dir=model_dir,
             bucket=s3_bucket,
             prefix=s3_prefix,
         )
 
         print("Upload complete")
 
-        # ---------- WRITE CANDIDATE POINTER ----------
-        write_candidate_pointer(
+        # ---------- WRITE STAGE POINTER ----------
+        write_stage_pointer(
             bucket=s3_bucket,
             prefix_base=s3_prefix_base,
+            stage=stage,
             model_name="credit_fraud_model",
             tag=tag,
             run_id=run_id,
