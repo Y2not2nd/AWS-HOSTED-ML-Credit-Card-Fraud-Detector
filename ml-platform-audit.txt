@@ -1,0 +1,151 @@
+=== IAM: promotion-irsa-role ===
+{
+    "Role": {
+        "Path": "/",
+        "RoleName": "promotion-irsa-role",
+        "RoleId": "AROAYOUXUNMC5FXXVSBES",
+        "Arn": "arn:aws:iam::581212334853:role/promotion-irsa-role",
+        "CreateDate": "2025-12-13T19:33:53+00:00",
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Federated": "arn:aws:iam::581212334853:oidc-provider/oidc.eks.eu-west-1.amazonaws.com/id/45140C115754C8385B12F9BD02CCBC8E"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                        "StringEquals": {
+                            "oidc.eks.eu-west-1.amazonaws.com/id/45140C115754C8385B12F9BD02CCBC8E:sub": "system:serviceaccount:ml-inference:model-promotion-sa",
+                            "oidc.eks.eu-west-1.amazonaws.com/id/45140C115754C8385B12F9BD02CCBC8E:aud": "sts.amazonaws.com"
+                        }
+                    }
+                }
+            ]
+        },
+        "MaxSessionDuration": 3600,
+        "RoleLastUsed": {
+            "LastUsedDate": "2025-12-14T03:09:19+00:00",
+            "Region": "eu-west-1"
+        }
+    }
+}
+{
+    "AttachedPolicies": []
+}
+
+=== IAM: credit-fraud-inference-green-role ===
+
+=== Kubernetes ServiceAccounts ===
+NAME                              SECRETS   AGE
+credit-fraud-inference-green-sa   0         10h
+default                           0         35h
+model-promotion-sa                0         9h
+
+=== ServiceAccount: model-promotion-sa ===
+Name:                model-promotion-sa
+Namespace:           ml-inference
+Labels:              <none>
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::581212334853:role/promotion-irsa-role
+Image pull secrets:  <none>
+Mountable secrets:   <none>
+Tokens:              <none>
+Events:              <none>
+
+=== ServiceAccount: credit-fraud-inference-green-sa ===
+Name:                credit-fraud-inference-green-sa
+Namespace:           ml-inference
+Labels:              <none>
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::581212334853:role/credit-fraud-inference-green-irsa
+Image pull secrets:  <none>
+Mountable secrets:   <none>
+Tokens:              <none>
+Events:              <none>
+
+=== Promotion pods ===
+NAME                                            READY   STATUS    RESTARTS   AGE
+credit-card-model-promoter-e93e7amw             0/1     Error     0          5h32m
+credit-fraud-inference-blue-78686cc574-c4zv4    1/1     Running   0          8h
+credit-fraud-inference-blue-78686cc574-lnlwv    1/1     Running   0          8h
+credit-fraud-inference-f567574bc-hfb28          1/1     Running   0          8h
+credit-fraud-inference-f567574bc-xsp89          1/1     Running   0          8h
+credit-fraud-inference-green-7bcdbf87d8-5tqh8   1/1     Running   0          79m
+credit-fraud-inference-green-7bcdbf87d8-qm262   1/1     Running   0          80m
+
+=== S3 model store ===
+                           PRE credit_fraud_model:i7nupugytkpeplxf/
+                           PRE credit_fraud_model:pn7vfwwytghy47uh/
+                           PRE credit_fraud_model:t2detvgys6tdq7vn/
+                           PRE credit_fraud_model:ztp3gcwyso4n2prc/
+2025-12-14 03:09:20        311 CANDIDATE
+2025-12-14 03:09:20        465 model.yaml
+2025-12-14 03:09:20       2913 saved_model.pkl
+
+=== Inference deployments ===
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+credit-fraud-inference         2/2     2            2           33h
+credit-fraud-inference-blue    2/2     2            2           10h
+credit-fraud-inference-green   2/2     2            2           10h
+Name:                   credit-fraud-inference-green
+Namespace:              ml-inference
+CreationTimestamp:      Sat, 13 Dec 2025 18:37:57 +0000
+Labels:                 app=credit-fraud-inference
+                        color=green
+Annotations:            deployment.kubernetes.io/revision: 24
+Selector:               app=credit-fraud-inference,color=green
+Replicas:               2 desired | 2 updated | 2 total | 2 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:           app=credit-fraud-inference
+                    color=green
+  Annotations:      kubectl.kubernetes.io/restartedAt: 2025-12-14T03:56:11Z
+  Service Account:  credit-fraud-inference-green-sa
+  Containers:
+   inference:
+    Image:      581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
+    Port:       3000/TCP
+    Host Port:  0/TCP
+    Liveness:   tcp-socket :3000 delay=30s timeout=1s period=30s #success=1 #failure=3
+    Readiness:  tcp-socket :3000 delay=15s timeout=1s period=30s #success=1 #failure=3
+    Environment:
+      BENTO_S3_BUCKET:      mlops-model-store-prod
+      BENTO_S3_PREFIX:      bentoml/models
+      BENTOML_MODEL_STAGE:  CANDIDATE
+      BENTOML_HOME:         /tmp/bentoml
+    Mounts:                 <none>
+  Volumes:                  <none>
+  Node-Selectors:           <none>
+  Tolerations:              <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  credit-fraud-inference-green-f49d47997 (0/0 replicas created), credit-fraud-inference-green-756fb6dc5b (0/0 replicas created), credit-fraud-inference-green-887445dd7 (0/0 replicas created), credit-fraud-inference-green-69d87fcf74 (0/0 replicas created), credit-fraud-inference-green-7996bc5dbb (0/0 replicas created), credit-fraud-inference-green-684b79fcd4 (0/0 replicas created), credit-fraud-inference-green-746869b699 (0/0 replicas created), credit-fraud-inference-green-55d45c5bdd (0/0 replicas created), credit-fraud-inference-green-645979d487 (0/0 replicas created), credit-fraud-inference-green-765d4dccc8 (0/0 replicas created)
+NewReplicaSet:   credit-fraud-inference-green-7bcdbf87d8 (2/2 replicas created)
+Events:          <none>
+
+=== Inference services ===
+NAME                     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+credit-fraud-inference   ClusterIP   172.20.133.8   <none>        3000/TCP   33h
+Name:                     credit-fraud-inference
+Namespace:                ml-inference
+Labels:                   app=credit-fraud-inference
+                          app.kubernetes.io/managed-by=Helm
+Annotations:              meta.helm.sh/release-name: credit-fraud-inference
+                          meta.helm.sh/release-namespace: ml-inference
+Selector:                 app=credit-fraud-inference,color=green
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       172.20.133.8
+IPs:                      172.20.133.8
+Port:                     http  3000/TCP
+TargetPort:               3000/TCP
+Endpoints:                10.0.1.89:3000,10.0.2.39:3000
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>

@@ -1,0 +1,664 @@
+===== AWS IDENTITY =====
+{
+    "UserId": "AIDAYOUXUNMCZ3D3X3KH6",
+    "Account": "581212334853",
+    "Arn": "arn:aws:iam::581212334853:user/y2"
+}
+
+===== REGION =====
+eu-west-1
+
+===== ECS CLUSTERS =====
+{
+    "clusterArns": [
+        "arn:aws:ecs:eu-west-1:581212334853:cluster/yas-ml-frontend-cluster"
+    ]
+}
+
+===== ECS SERVICES (ALL CLUSTERS) =====
+--- Cluster: arn:aws:ecs:eu-west-1:581212334853:cluster/yas-ml-frontend-cluster ---
+{
+    "serviceArns": [
+        "arn:aws:ecs:eu-west-1:581212334853:service/yas-ml-frontend-cluster/yas-ml-frontend-task-service-6u7az557"
+    ]
+}
+
+===== ECS TASKS (RUNNING) =====
+--- Cluster: arn:aws:ecs:eu-west-1:581212334853:cluster/yas-ml-frontend-cluster ---
+{
+    "taskArns": [
+        "arn:aws:ecs:eu-west-1:581212334853:task/yas-ml-frontend-cluster/315da3a4df7f4342a2ad52c221da7c31"
+    ]
+}
+
+===== ECS TASK DETAILS =====
+--- Task: arn:aws:ecs:eu-west-1:581212334853:task/yas-ml-frontend-cluster/315da3a4df7f4342a2ad52c221da7c31 ---
+{
+    "tasks": [
+        {
+            "attachments": [
+                {
+                    "id": "48760705-6575-431c-8a14-b81dfaa12ba0",
+                    "type": "ElasticNetworkInterface",
+                    "status": "ATTACHED",
+                    "details": [
+                        {
+                            "name": "subnetId",
+                            "value": "subnet-091f2948b68a5285e"
+                        },
+                        {
+                            "name": "networkInterfaceId",
+                            "value": "eni-0e2827576fb4f1b70"
+                        },
+                        {
+                            "name": "macAddress",
+                            "value": "06:50:26:b2:ac:53"
+                        },
+                        {
+                            "name": "privateDnsName",
+                            "value": "ip-10-0-1-62.eu-west-1.compute.internal"
+                        },
+                        {
+                            "name": "privateIPv4Address",
+                            "value": "10.0.1.62"
+                        }
+                    ]
+                }
+            ],
+            "attributes": [
+                {
+                    "name": "ecs.cpu-architecture",
+                    "value": "x86_64"
+                }
+            ],
+            "availabilityZone": "eu-west-1a",
+            "capacityProviderName": "FARGATE",
+            "clusterArn": "arn:aws:ecs:eu-west-1:581212334853:cluster/yas-ml-frontend-cluster",
+            "connectivity": "CONNECTED",
+            "connectivityAt": "2025-12-12T20:42:05.128000+00:00",
+            "containers": [
+                {
+                    "containerArn": "arn:aws:ecs:eu-west-1:581212334853:container/yas-ml-frontend-cluster/315da3a4df7f4342a2ad52c221da7c31/e2b20d61-0196-4dec-9cf1-d4b676e7c008",
+                    "taskArn": "arn:aws:ecs:eu-west-1:581212334853:task/yas-ml-frontend-cluster/315da3a4df7f4342a2ad52c221da7c31",
+                    "name": "streamlit-frontend",
+                    "image": "581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference@sha256:048d1e0551e4234843be1d68a08ded3d1c605a6db8b8885b2f6d0ac5549c8f37",
+                    "imageDigest": "sha256:048d1e0551e4234843be1d68a08ded3d1c605a6db8b8885b2f6d0ac5549c8f37",
+                    "runtimeId": "315da3a4df7f4342a2ad52c221da7c31-2652508689",
+                    "lastStatus": "RUNNING",
+                    "networkBindings": [],
+                    "networkInterfaces": [
+                        {
+                            "attachmentId": "48760705-6575-431c-8a14-b81dfaa12ba0",
+                            "privateIpv4Address": "10.0.1.62"
+                        }
+                    ],
+                    "healthStatus": "UNHEALTHY",
+                    "cpu": "0"
+                }
+            ],
+            "cpu": "512",
+            "createdAt": "2025-12-12T20:41:58.754000+00:00",
+            "desiredStatus": "RUNNING",
+            "enableExecuteCommand": false,
+            "group": "service:yas-ml-frontend-task-service-6u7az557",
+            "healthStatus": "UNHEALTHY",
+            "lastStatus": "RUNNING",
+            "launchType": "FARGATE",
+            "memory": "1024",
+            "overrides": {
+                "containerOverrides": [
+                    {
+                        "name": "streamlit-frontend"
+                    }
+                ],
+                "inferenceAcceleratorOverrides": []
+            },
+            "platformVersion": "1.4.0",
+            "platformFamily": "Linux",
+            "pullStartedAt": "2025-12-12T20:42:12.178000+00:00",
+            "pullStoppedAt": "2025-12-12T20:42:21.802000+00:00",
+            "startedAt": "2025-12-12T20:42:31.879000+00:00",
+            "startedBy": "ecs-svc/4047776696210539143",
+            "tags": [],
+            "taskArn": "arn:aws:ecs:eu-west-1:581212334853:task/yas-ml-frontend-cluster/315da3a4df7f4342a2ad52c221da7c31",
+            "taskDefinitionArn": "arn:aws:ecs:eu-west-1:581212334853:task-definition/yas-ml-frontend-task:1",
+            "version": 4,
+            "ephemeralStorage": {
+                "sizeInGiB": 20
+            },
+            "fargateEphemeralStorage": {
+                "sizeInGiB": 20
+            }
+        }
+    ],
+    "failures": []
+}
+
+===== LOAD BALANCERS =====
+{
+    "LoadBalancers": [
+        {
+            "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:581212334853:loadbalancer/app/yas-ml-frontend-alb/fbb3728483e0285b",
+            "DNSName": "yas-ml-frontend-alb-426796308.eu-west-1.elb.amazonaws.com",
+            "CanonicalHostedZoneId": "Z32O12XQLNTSW2",
+            "CreatedTime": "2025-12-12T20:22:16.765000+00:00",
+            "LoadBalancerName": "yas-ml-frontend-alb",
+            "Scheme": "internet-facing",
+            "VpcId": "vpc-03dfea2a41a342044",
+            "State": {
+                "Code": "active"
+            },
+            "Type": "application",
+            "AvailabilityZones": [
+                {
+                    "ZoneName": "eu-west-1b",
+                    "SubnetId": "subnet-01ae53e7f66e0aad0",
+                    "LoadBalancerAddresses": []
+                },
+                {
+                    "ZoneName": "eu-west-1a",
+                    "SubnetId": "subnet-01b61cb1e8ff8ea50",
+                    "LoadBalancerAddresses": []
+                }
+            ],
+            "SecurityGroups": [
+                "sg-002d1303e8b934671"
+            ],
+            "IpAddressType": "ipv4",
+            "EnablePrefixForIpv6SourceNat": "off"
+        }
+    ]
+}
+
+===== TARGET GROUPS =====
+{
+    "TargetGroups": [
+        {
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:eu-west-1:581212334853:targetgroup/ip/461795e334dfefe9",
+            "TargetGroupName": "ip",
+            "Protocol": "HTTP",
+            "Port": 8501,
+            "VpcId": "vpc-03dfea2a41a342044",
+            "HealthCheckProtocol": "HTTP",
+            "HealthCheckPort": "traffic-port",
+            "HealthCheckEnabled": true,
+            "HealthCheckIntervalSeconds": 30,
+            "HealthCheckTimeoutSeconds": 5,
+            "HealthyThresholdCount": 5,
+            "UnhealthyThresholdCount": 2,
+            "HealthCheckPath": "/_stcore/health",
+            "Matcher": {
+                "HttpCode": "200"
+            },
+            "LoadBalancerArns": [
+                "arn:aws:elasticloadbalancing:eu-west-1:581212334853:loadbalancer/app/yas-ml-frontend-alb/fbb3728483e0285b"
+            ],
+            "TargetType": "ip",
+            "ProtocolVersion": "HTTP1",
+            "IpAddressType": "ipv4"
+        }
+    ]
+}
+
+===== TARGET HEALTH =====
+--- Target Group: arn:aws:elasticloadbalancing:eu-west-1:581212334853:targetgroup/ip/461795e334dfefe9 ---
+{
+    "TargetHealthDescriptions": [
+        {
+            "Target": {
+                "Id": "10.0.1.62",
+                "Port": 8501,
+                "AvailabilityZone": "eu-west-1a"
+            },
+            "HealthCheckPort": "8501",
+            "TargetHealth": {
+                "State": "healthy"
+            },
+            "AdministrativeOverride": {
+                "State": "no_override",
+                "Reason": "AdministrativeOverride.NoOverride",
+                "Description": "No override is currently active on target"
+            }
+        }
+    ]
+}
+
+===== SUBNET DETAILS =====
+{
+    "Subnets": [
+        {
+            "AvailabilityZoneId": "euw1-az3",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "581212334853",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "SubnetArn": "arn:aws:ec2:eu-west-1:581212334853:subnet/subnet-0427e0f64ef802d21",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-0427e0f64ef802d21",
+            "State": "available",
+            "VpcId": "vpc-07d9c191451014f33",
+            "CidrBlock": "172.31.32.0/20",
+            "AvailableIpAddressCount": 4091,
+            "AvailabilityZone": "eu-west-1b",
+            "DefaultForAz": true,
+            "MapPublicIpOnLaunch": true
+        },
+        {
+            "AvailabilityZoneId": "euw1-az3",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "581212334853",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "yas-ml-vpc-public-eu-west-1b"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "YAS-ML"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:eu-west-1:581212334853:subnet/subnet-01ae53e7f66e0aad0",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-01ae53e7f66e0aad0",
+            "State": "available",
+            "VpcId": "vpc-03dfea2a41a342044",
+            "CidrBlock": "10.0.102.0/24",
+            "AvailableIpAddressCount": 249,
+            "AvailabilityZone": "eu-west-1b",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false
+        },
+        {
+            "AvailabilityZoneId": "euw1-az2",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "581212334853",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "yas-ml-vpc-private-eu-west-1a"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "YAS-ML"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:eu-west-1:581212334853:subnet/subnet-091f2948b68a5285e",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-091f2948b68a5285e",
+            "State": "available",
+            "VpcId": "vpc-03dfea2a41a342044",
+            "CidrBlock": "10.0.1.0/24",
+            "AvailableIpAddressCount": 217,
+            "AvailabilityZone": "eu-west-1a",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false
+        },
+        {
+            "AvailabilityZoneId": "euw1-az2",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "581212334853",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "yas-ml-vpc-public-eu-west-1a"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "YAS-ML"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:eu-west-1:581212334853:subnet/subnet-01b61cb1e8ff8ea50",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-01b61cb1e8ff8ea50",
+            "State": "available",
+            "VpcId": "vpc-03dfea2a41a342044",
+            "CidrBlock": "10.0.101.0/24",
+            "AvailableIpAddressCount": 248,
+            "AvailabilityZone": "eu-west-1a",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false
+        },
+        {
+            "AvailabilityZoneId": "euw1-az2",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "581212334853",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "yas-ml-vpc-public-eu-west-1a"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:eu-west-1:581212334853:subnet/subnet-0725281c0d59e66ce",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-0725281c0d59e66ce",
+            "State": "available",
+            "VpcId": "vpc-03dfea2a41a342044",
+            "CidrBlock": "10.0.8.0/24",
+            "AvailableIpAddressCount": 251,
+            "AvailabilityZone": "eu-west-1a",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false
+        },
+        {
+            "AvailabilityZoneId": "euw1-az1",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "581212334853",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "SubnetArn": "arn:aws:ec2:eu-west-1:581212334853:subnet/subnet-0f5adea09cb2225fa",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-0f5adea09cb2225fa",
+            "State": "available",
+            "VpcId": "vpc-07d9c191451014f33",
+            "CidrBlock": "172.31.0.0/20",
+            "AvailableIpAddressCount": 4091,
+            "AvailabilityZone": "eu-west-1c",
+            "DefaultForAz": true,
+            "MapPublicIpOnLaunch": true
+        },
+        {
+            "AvailabilityZoneId": "euw1-az3",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "581212334853",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "YAS-ML"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "yas-ml-vpc-private-eu-west-1b"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:eu-west-1:581212334853:subnet/subnet-0e5b3a44a3d8080b9",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-0e5b3a44a3d8080b9",
+            "State": "available",
+            "VpcId": "vpc-03dfea2a41a342044",
+            "CidrBlock": "10.0.2.0/24",
+            "AvailableIpAddressCount": 219,
+            "AvailabilityZone": "eu-west-1b",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false
+        },
+        {
+            "AvailabilityZoneId": "euw1-az2",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "581212334853",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "SubnetArn": "arn:aws:ec2:eu-west-1:581212334853:subnet/subnet-001cc09f845c38775",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-001cc09f845c38775",
+            "State": "available",
+            "VpcId": "vpc-07d9c191451014f33",
+            "CidrBlock": "172.31.16.0/20",
+            "AvailableIpAddressCount": 4091,
+            "AvailabilityZone": "eu-west-1a",
+            "DefaultForAz": true,
+            "MapPublicIpOnLaunch": true
+        }
+    ]
+}
+
+===== ROUTE TABLES =====
+{
+    "RouteTables": [
+        {
+            "Associations": [
+                {
+                    "Main": false,
+                    "RouteTableAssociationId": "rtbassoc-0b16bafa58e61ccf6",
+                    "RouteTableId": "rtb-02078c21ecb24cb9a",
+                    "SubnetId": "subnet-0e5b3a44a3d8080b9",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                },
+                {
+                    "Main": false,
+                    "RouteTableAssociationId": "rtbassoc-0b06efd747f2fba10",
+                    "RouteTableId": "rtb-02078c21ecb24cb9a",
+                    "SubnetId": "subnet-091f2948b68a5285e",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "PropagatingVgws": [],
+            "RouteTableId": "rtb-02078c21ecb24cb9a",
+            "Routes": [
+                {
+                    "DestinationCidrBlock": "10.0.0.0/16",
+                    "GatewayId": "local",
+                    "Origin": "CreateRouteTable",
+                    "State": "active"
+                },
+                {
+                    "DestinationCidrBlock": "0.0.0.0/0",
+                    "NatGatewayId": "nat-0b7a5df7b8673904d",
+                    "Origin": "CreateRoute",
+                    "State": "active"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "yas-ml-vpc-private"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "YAS-ML"
+                }
+            ],
+            "VpcId": "vpc-03dfea2a41a342044",
+            "OwnerId": "581212334853"
+        },
+        {
+            "Associations": [
+                {
+                    "Main": true,
+                    "RouteTableAssociationId": "rtbassoc-0a150ace90545f741",
+                    "RouteTableId": "rtb-0dd01caeebeceaf44",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "PropagatingVgws": [],
+            "RouteTableId": "rtb-0dd01caeebeceaf44",
+            "Routes": [
+                {
+                    "DestinationCidrBlock": "172.31.0.0/16",
+                    "GatewayId": "local",
+                    "Origin": "CreateRouteTable",
+                    "State": "active"
+                },
+                {
+                    "DestinationCidrBlock": "0.0.0.0/0",
+                    "GatewayId": "igw-028d48582ae0b00bd",
+                    "Origin": "CreateRoute",
+                    "State": "active"
+                }
+            ],
+            "Tags": [],
+            "VpcId": "vpc-07d9c191451014f33",
+            "OwnerId": "581212334853"
+        },
+        {
+            "Associations": [
+                {
+                    "Main": true,
+                    "RouteTableAssociationId": "rtbassoc-0392f49639cce7cba",
+                    "RouteTableId": "rtb-094e9aa33e3905704",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "PropagatingVgws": [],
+            "RouteTableId": "rtb-094e9aa33e3905704",
+            "Routes": [
+                {
+                    "DestinationCidrBlock": "10.0.0.0/16",
+                    "GatewayId": "local",
+                    "Origin": "CreateRouteTable",
+                    "State": "active"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "YAS-ML"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "yas-ml-vpc-default"
+                }
+            ],
+            "VpcId": "vpc-03dfea2a41a342044",
+            "OwnerId": "581212334853"
+        },
+        {
+            "Associations": [
+                {
+                    "Main": false,
+                    "RouteTableAssociationId": "rtbassoc-0e9cb9662cc7d1039",
+                    "RouteTableId": "rtb-0e7643f9d6d1c48d9",
+                    "SubnetId": "subnet-01ae53e7f66e0aad0",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                },
+                {
+                    "Main": false,
+                    "RouteTableAssociationId": "rtbassoc-0fa2b24e0c89032ba",
+                    "RouteTableId": "rtb-0e7643f9d6d1c48d9",
+                    "SubnetId": "subnet-01b61cb1e8ff8ea50",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                },
+                {
+                    "Main": false,
+                    "RouteTableAssociationId": "rtbassoc-0ee8b6124ab7e7c14",
+                    "RouteTableId": "rtb-0e7643f9d6d1c48d9",
+                    "SubnetId": "subnet-0725281c0d59e66ce",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "PropagatingVgws": [],
+            "RouteTableId": "rtb-0e7643f9d6d1c48d9",
+            "Routes": [
+                {
+                    "DestinationCidrBlock": "10.0.0.0/16",
+                    "GatewayId": "local",
+                    "Origin": "CreateRouteTable",
+                    "State": "active"
+                },
+                {
+                    "DestinationCidrBlock": "0.0.0.0/0",
+                    "GatewayId": "igw-09523c8059d9803a9",
+                    "Origin": "CreateRoute",
+                    "State": "active"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "yas-ml-vpc-public"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "YAS-ML"
+                }
+            ],
+            "VpcId": "vpc-03dfea2a41a342044",
+            "OwnerId": "581212334853"
+        }
+    ]
+}

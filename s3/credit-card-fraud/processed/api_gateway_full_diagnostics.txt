@@ -1,0 +1,293 @@
+===== AWS IDENTITY =====
+{
+    "UserId": "AIDAYOUXUNMCZ3D3X3KH6",
+    "Account": "581212334853",
+    "Arn": "arn:aws:iam::581212334853:user/y2"
+}
+
+===== AWS REGION =====
+eu-west-1
+
+===== API GATEWAY: REST APIS =====
+{
+    "items": [
+        {
+            "id": "yenautn8dh",
+            "name": "yas-ml-api",
+            "createdDate": "2025-12-14T05:50:31+00:00",
+            "apiKeySource": "HEADER",
+            "endpointConfiguration": {
+                "types": [
+                    "REGIONAL"
+                ],
+                "ipAddressType": "ipv4"
+            },
+            "disableExecuteApiEndpoint": false,
+            "rootResourceId": "6vgj07pofl"
+        }
+    ]
+}
+
+===== API GATEWAY: STAGES (yas-ml-api) =====
+{
+    "item": [
+        {
+            "deploymentId": "7c6p72",
+            "stageName": "prod",
+            "cacheClusterEnabled": false,
+            "cacheClusterSize": "0.5",
+            "cacheClusterStatus": "NOT_AVAILABLE",
+            "methodSettings": {},
+            "tracingEnabled": false,
+            "createdDate": "2025-12-14T06:03:42+00:00",
+            "lastUpdatedDate": "2025-12-14T06:49:20+00:00"
+        }
+    ]
+}
+
+===== API GATEWAY: RESOURCES =====
+{
+    "items": [
+        {
+            "id": "6vgj07pofl",
+            "path": "/",
+            "resourceMethods": {
+                "ANY": {}
+            }
+        },
+        {
+            "id": "82jc2e",
+            "parentId": "6vgj07pofl",
+            "pathPart": "{proxy+}",
+            "path": "/{proxy+}",
+            "resourceMethods": {
+                "ANY": {}
+            }
+        }
+    ]
+}
+
+===== API GATEWAY: ROOT METHOD (/) =====
+{
+    "httpMethod": "ANY",
+    "authorizationType": "NONE",
+    "apiKeyRequired": false,
+    "requestParameters": {},
+    "requestModels": {},
+    "methodResponses": {
+        "200": {
+            "statusCode": "200",
+            "responseModels": {
+                "application/json": "Empty"
+            }
+        }
+    },
+    "methodIntegration": {
+        "type": "HTTP",
+        "httpMethod": "ANY",
+        "uri": "http://yas-ml-frontend-alb-426796308.eu-west-1.elb.amazonaws.com",
+        "connectionType": "VPC_LINK",
+        "connectionId": "15g78z",
+        "passthroughBehavior": "WHEN_NO_MATCH",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "6vgj07pofl",
+        "cacheKeyParameters": [],
+        "integrationResponses": {
+            "200": {
+                "statusCode": "200",
+                "responseTemplates": {
+                    "application/json": null
+                }
+            }
+        }
+    }
+}
+
+===== API GATEWAY: PROXY METHOD (/{proxy+}) =====
+{
+    "httpMethod": "ANY",
+    "authorizationType": "NONE",
+    "apiKeyRequired": false,
+    "requestParameters": {
+        "method.request.path.proxy": true
+    },
+    "methodIntegration": {
+        "type": "HTTP_PROXY",
+        "httpMethod": "ANY",
+        "uri": "http://yas-ml-frontend-alb-426796308.eu-west-1.elb.amazonaws.com",
+        "connectionType": "VPC_LINK",
+        "connectionId": "15g78z",
+        "requestParameters": {
+            "integration.request.path.proxy": "method.request.path.proxy"
+        },
+        "passthroughBehavior": "WHEN_NO_TEMPLATES",
+        "timeoutInMillis": 29000,
+        "cacheNamespace": "82jc2e",
+        "cacheKeyParameters": [],
+        "integrationResponses": {
+            "200": {
+                "statusCode": "200",
+                "responseTemplates": {
+                    "application/json": null
+                }
+            }
+        }
+    }
+}
+
+===== API GATEWAY: INTEGRATION (ROOT) =====
+{
+    "type": "HTTP",
+    "httpMethod": "ANY",
+    "uri": "http://yas-ml-frontend-alb-426796308.eu-west-1.elb.amazonaws.com",
+    "connectionType": "VPC_LINK",
+    "connectionId": "15g78z",
+    "passthroughBehavior": "WHEN_NO_MATCH",
+    "timeoutInMillis": 29000,
+    "cacheNamespace": "6vgj07pofl",
+    "cacheKeyParameters": [],
+    "integrationResponses": {
+        "200": {
+            "statusCode": "200",
+            "responseTemplates": {
+                "application/json": null
+            }
+        }
+    }
+}
+
+===== API GATEWAY: INTEGRATION (PROXY) =====
+{
+    "type": "HTTP_PROXY",
+    "httpMethod": "ANY",
+    "uri": "http://yas-ml-frontend-alb-426796308.eu-west-1.elb.amazonaws.com",
+    "connectionType": "VPC_LINK",
+    "connectionId": "15g78z",
+    "requestParameters": {
+        "integration.request.path.proxy": "method.request.path.proxy"
+    },
+    "passthroughBehavior": "WHEN_NO_TEMPLATES",
+    "timeoutInMillis": 29000,
+    "cacheNamespace": "82jc2e",
+    "cacheKeyParameters": [],
+    "integrationResponses": {
+        "200": {
+            "statusCode": "200",
+            "responseTemplates": {
+                "application/json": null
+            }
+        }
+    }
+}
+
+===== API GATEWAY: VPC LINKS =====
+{
+    "items": []
+}
+
+===== LOAD BALANCERS =====
+{
+    "LoadBalancers": [
+        {
+            "LoadBalancerArn": "arn:aws:elasticloadbalancing:eu-west-1:581212334853:loadbalancer/app/yas-ml-frontend-alb/fbb3728483e0285b",
+            "DNSName": "yas-ml-frontend-alb-426796308.eu-west-1.elb.amazonaws.com",
+            "CanonicalHostedZoneId": "Z32O12XQLNTSW2",
+            "CreatedTime": "2025-12-12T20:22:16.765000+00:00",
+            "LoadBalancerName": "yas-ml-frontend-alb",
+            "Scheme": "internet-facing",
+            "VpcId": "vpc-03dfea2a41a342044",
+            "State": {
+                "Code": "active"
+            },
+            "Type": "application",
+            "AvailabilityZones": [
+                {
+                    "ZoneName": "eu-west-1b",
+                    "SubnetId": "subnet-01ae53e7f66e0aad0",
+                    "LoadBalancerAddresses": []
+                },
+                {
+                    "ZoneName": "eu-west-1a",
+                    "SubnetId": "subnet-01b61cb1e8ff8ea50",
+                    "LoadBalancerAddresses": []
+                }
+            ],
+            "SecurityGroups": [
+                "sg-002d1303e8b934671"
+            ],
+            "IpAddressType": "ipv4",
+            "EnablePrefixForIpv6SourceNat": "off"
+        }
+    ]
+}
+
+===== TARGET GROUPS =====
+{
+    "TargetGroups": [
+        {
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:eu-west-1:581212334853:targetgroup/ip/461795e334dfefe9",
+            "TargetGroupName": "ip",
+            "Protocol": "HTTP",
+            "Port": 8501,
+            "VpcId": "vpc-03dfea2a41a342044",
+            "HealthCheckProtocol": "HTTP",
+            "HealthCheckPort": "traffic-port",
+            "HealthCheckEnabled": true,
+            "HealthCheckIntervalSeconds": 30,
+            "HealthCheckTimeoutSeconds": 5,
+            "HealthyThresholdCount": 5,
+            "UnhealthyThresholdCount": 2,
+            "HealthCheckPath": "/_stcore/health",
+            "Matcher": {
+                "HttpCode": "200"
+            },
+            "LoadBalancerArns": [
+                "arn:aws:elasticloadbalancing:eu-west-1:581212334853:loadbalancer/app/yas-ml-frontend-alb/fbb3728483e0285b"
+            ],
+            "TargetType": "ip",
+            "ProtocolVersion": "HTTP1",
+            "IpAddressType": "ipv4"
+        }
+    ]
+}
+
+===== TARGET HEALTH =====
+{
+    "TargetHealthDescriptions": [
+        {
+            "Target": {
+                "Id": "10.0.1.62",
+                "Port": 8501,
+                "AvailabilityZone": "eu-west-1a"
+            },
+            "HealthCheckPort": "8501",
+            "TargetHealth": {
+                "State": "healthy"
+            },
+            "AdministrativeOverride": {
+                "State": "no_override",
+                "Reason": "AdministrativeOverride.NoOverride",
+                "Description": "No override is currently active on target"
+            }
+        }
+    ]
+}
+
+===== DIRECT ALB TEST (HTTP) =====
+HTTP/1.1 200 OK
+Date: Sun, 14 Dec 2025 06:51:48 GMT
+Content-Type: text/html
+Content-Length: 891
+Connection: keep-alive
+Server: TornadoServer/6.5.3
+Accept-Ranges: bytes
+Etag: "dc6df26b54ef96810fd4ff9271556d7ea55b11d9cc0f482bf926e6799f6e76a78d91a2c3cc93aa97e9be16c46ab15f66ac11789a762bde442c063c90712e860d"
+Last-Modified: Fri, 12 Dec 2025 19:25:40 GMT
+Cache-Control: no-cache
+Vary: Accept-Encoding
+
+
+===== API GATEWAY TEST: ROOT =====
+{"message": "Internal server error"}
+===== API GATEWAY TEST: PROXY =====
+{"message": "Internal server error"}
