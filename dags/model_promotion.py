@@ -31,7 +31,7 @@ with DAG(
         # Keep pod around for debugging if it fails
         is_delete_operator_pod=False,
 
-        # Promotion image
+        # Promotion image (already correct)
         image=(
             "581212334853.dkr.ecr.eu-west-1.amazonaws.com/"
             "yas-ml-inference:model-promoter-v4"
@@ -46,13 +46,14 @@ with DAG(
             # MLflow
             "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:5000",
 
-            # REQUIRED for promotion upload
+            # Bento model storage
             "BENTO_S3_BUCKET": "mlops-model-store-prod",
-
-            # Optional but recommended for structure
             "BENTO_S3_PREFIX": "bentoml/models",
 
-            # AWS region (IRSA already injects credentials)
+            # 🔑 NEW: promotion target stage
+            "BENTO_MODEL_STAGE": "CANDIDATE",
+
+            # AWS region (IRSA handles auth)
             "AWS_REGION": "eu-west-1",
             "AWS_DEFAULT_REGION": "eu-west-1",
         },
