@@ -34,7 +34,7 @@ with DAG(
         # Promotion image (already correct)
         image=(
             "581212334853.dkr.ecr.eu-west-1.amazonaws.com/"
-            "yas-ml-inference:model-promoter-v4"
+            "yas-ml-inference:model-promoter-v5"
         ),
         image_pull_policy="Always",
 
