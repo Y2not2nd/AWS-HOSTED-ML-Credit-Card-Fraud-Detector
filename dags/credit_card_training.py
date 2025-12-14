@@ -22,7 +22,7 @@ with DAG(
 
         service_account_name="credit-card-trainer",
 
-        image="581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:credit-card-trainer",
+        image="581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:CreditCardTraining",
         image_pull_policy="Always",
 
         get_logs=True,

@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY training.py /app/training.py
 
-RUN pip install \
+RUN pip install --no-cache-dir \
     pandas \
     scikit-learn \
     mlflow \

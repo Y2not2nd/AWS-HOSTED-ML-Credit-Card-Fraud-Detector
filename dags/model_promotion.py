@@ -36,7 +36,7 @@ with DAG(
         image=(
             "581212334853.dkr.ecr.eu-west-1.amazonaws.com/"
             "yas-ml-inference@sha256:"
-            "b42926ba9bf233e233f393d51596b2e7aa3dbfba7b604fec70acd51823ad162d"
+            "d7b756617d9e7ef1bfb059299e9e87d7aa8de59a111837df86d72224e94929f0"
         ),
         image_pull_policy="Always",
 
@@ -45,10 +45,8 @@ with DAG(
 
         # Environment variables injected into the container
         env_vars={
-            # BentoML model store config
             "BENTOML_CONFIG": "/config/bentoml.yaml",
-
-            # MLflow tracking server
+            "BENTOML_HOME": "/tmp/bentoml",
             "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:5000",
         },
 

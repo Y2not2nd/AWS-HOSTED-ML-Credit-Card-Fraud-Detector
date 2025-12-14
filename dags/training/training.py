@@ -7,12 +7,12 @@ from urllib.parse import urlparse
 import boto3
 import pandas as pd
 import mlflow
+import mlflow.sklearn
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, average_precision_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-import joblib
 
 
 def parse_args():
@@ -51,6 +51,9 @@ def load_and_slice_data(data_path: str, train_end: float, test_end: float):
     local_path = resolve_data_path(data_path)
     df = pd.read_csv(local_path)
 
+    if "Time" not in df.columns or "Class" not in df.columns:
+        raise ValueError("Dataset must contain Time and Class columns")
+
     df = df.sort_values("Time").reset_index(drop=True)
 
     n_rows = len(df)
@@ -60,6 +63,9 @@ def load_and_slice_data(data_path: str, train_end: float, test_end: float):
     train_df = df.iloc[:train_end_idx]
     test_df = df.iloc[train_end_idx:test_end_idx]
 
+    if train_df.empty or test_df.empty:
+        raise ValueError("Train or test split resulted in empty dataset")
+
     return train_df, test_df
 
 
@@ -67,7 +73,14 @@ def build_pipeline():
     return Pipeline(
         steps=[
             ("scaler", StandardScaler()),
-            ("model", LogisticRegression(max_iter=1000, class_weight="balanced")),
+            (
+                "model",
+                LogisticRegression(
+                    max_iter=1000,
+                    class_weight="balanced",
+                    random_state=42,
+                ),
+            ),
         ]
     )
 
@@ -93,51 +106,42 @@ def main():
 
     pipeline = build_pipeline()
 
-    run_id = None
-    try:
-        with mlflow.start_run() as run:
-            run_id = run.info.run_id
+    with mlflow.start_run() as run:
+        run_id = run.info.run_id
 
-            mlflow.log_params(
-                {
-                    "train_end_percent": args.train_end_percent,
-                    "test_end_percent": args.test_end_percent,
-                    "train_rows": len(train_df),
-                    "test_rows": len(test_df),
-                }
-            )
+        mlflow.log_params(
+            {
+                "train_end_percent": args.train_end_percent,
+                "test_end_percent": args.test_end_percent,
+                "train_rows": len(train_df),
+                "test_rows": len(test_df),
+            }
+        )
 
-            pipeline.fit(X_train, y_train)
+        pipeline.fit(X_train, y_train)
 
-            y_pred_proba = pipeline.predict_proba(X_test)[:, 1]
+        y_pred_proba = pipeline.predict_proba(X_test)[:, 1]
 
-            roc_auc = roc_auc_score(y_test, y_pred_proba)
-            avg_precision = average_precision_score(y_test, y_pred_proba)
+        roc_auc = roc_auc_score(y_test, y_pred_proba)
+        avg_precision = average_precision_score(y_test, y_pred_proba)
 
-            mlflow.log_metric("roc_auc", roc_auc)
-            mlflow.log_metric("average_precision", avg_precision)
+        mlflow.log_metric("roc_auc", roc_auc)
+        mlflow.log_metric("average_precision", avg_precision)
 
-            # SAFE: log model as plain artifact (no registry, no logged-models API)
-            os.makedirs("/tmp/model", exist_ok=True)
-            joblib.dump(pipeline, "/tmp/model/model.joblib")
-            mlflow.log_artifact("/tmp/model/model.joblib", artifact_path="model")
+        # ✅ CRITICAL FIX
+        # Log a REAL MLflow model
+        mlflow.sklearn.log_model(
+            pipeline,
+            artifact_path="model",
+        )
 
-        print(json.dumps({
-            "run_id": run_id,
-            "roc_auc": roc_auc,
-            "average_precision": avg_precision,
-        }))
-        sys.stdout.flush()
-        return 0
-
-    except Exception as e:
-        print(f"Training failed: {e}", file=sys.stderr)
-        try:
-            mlflow.end_run(status="FAILED")
-        except Exception:
-            pass
-        return 1
+    print(json.dumps({
+        "run_id": run_id,
+        "roc_auc": roc_auc,
+        "average_precision": avg_precision,
+    }))
+    sys.stdout.flush()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
