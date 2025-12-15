@@ -8,7 +8,7 @@ DAG_ID = "credit_card_fraud_training"
 with DAG(
     dag_id=DAG_ID,
     start_date=datetime(2024, 1, 1),
-    schedule=None,
+    schedule="*/2 * * * *",
     catchup=False,
     tags=["ml", "training", "credit-card"],
 ) as dag:
