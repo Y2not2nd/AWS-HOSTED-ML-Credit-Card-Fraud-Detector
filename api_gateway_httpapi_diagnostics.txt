@@ -1,0 +1,160 @@
+]633;E;{   echo "=============================="\x3b   echo "API GATEWAY HTTP API DIAGNOSTICS"\x3b   echo "=============================="\x3b   echo\x3b   date\x3b   echo\x3b    echo "===== DNS RESOLUTION ====="\x3b   nslookup pgl574b1yl.execute-api.eu-west-1.amazonaws.com\x3b   echo\x3b    echo "===== HTTPS CONNECTIVITY (ROOT /) ====="\x3b   curl -v https://pgl574b1yl.execute-api.eu-west-1.amazonaws.com/\x3b   echo\x3b    echo "===== HTTPS CONNECTIVITY (COMMON HEALTH PATH) ====="\x3b   curl -v https://pgl574b1yl.execute-api.eu-west-1.amazonaws.com/health\x3b   echo\x3b    echo "===== HTTPS CONNECTIVITY (COMMON API PATH) ====="\x3b   curl -v https://pgl574b1yl.execute-api.eu-west-1.amazonaws.com/api\x3b   echo\x3b    echo "===== HEADERS ONLY (ROUTING CHECK) ====="\x3b   curl -I -v https://pgl574b1yl.execute-api.eu-west-1.amazonaws.com/\x3b   echo\x3b  } > api_gateway_httpapi_diagnostics.txt 2>&1;a0fb87ab-4267-4ec3-81ec-c13d47a89612]633;C==============================
+API GATEWAY HTTP API DIAGNOSTICS
+==============================
+
+Sun, Dec 14, 2025  7:33:38 PM
+
+===== DNS RESOLUTION =====
+Non-authoritative answer:
+Server:  cache1.service.virginmedia.net
+Address:  194.168.4.100
+
+Name:    pgl574b1yl.execute-api.eu-west-1.amazonaws.com
+Addresses:  54.77.84.4
+	  54.76.175.79
+
+
+===== HTTPS CONNECTIVITY (ROOT /) =====
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host pgl574b1yl.execute-api.eu-west-1.amazonaws.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 54.76.175.79, 54.77.84.4
+*   Trying 54.76.175.79:443...
+* schannel: disabled automatic use of client certificate
+* Connected to pgl574b1yl.execute-api.eu-west-1.amazonaws.com (54.76.175.79) port 443
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: pgl574b1yl.execute-api.eu-west-1.amazonaws.com
+> User-Agent: curl/8.12.1
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Date: Sun, 14 Dec 2025 19:33:40 GMT
+< Content-Type: text/html
+< Content-Length: 891
+< Connection: keep-alive
+< server: TornadoServer/6.5.3
+< accept-ranges: bytes
+< etag: "dc6df26b54ef96810fd4ff9271556d7ea55b11d9cc0f482bf926e6799f6e76a78d91a2c3cc93aa97e9be16c46ab15f66ac11789a762bde442c063c90712e860d"
+< last-modified: Fri, 12 Dec 2025 19:25:40 GMT
+< cache-control: no-cache
+< vary: Accept-Encoding
+< apigw-requestid: Vl-bMgJJjoEEM5Q=
+< 
+{ [891 bytes data]
+100   891  100   891    0     0   6724      0 --:--:-- --:--:-- --:--:--  6801<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><link rel="shortcut icon" href="./favicon.png"/><link rel="preload" href="./static/media/SourceSansPro-Regular.0d69e5ff5e92ac64a0c9.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="./static/media/SourceSansPro-SemiBold.abed79cd0df1827e18cf.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="./static/media/SourceSansPro-Bold.118dea98980e20a81ced.woff2" as="font" type="font/woff2" crossorigin><title>Streamlit</title><script>window.prerenderReady=!1</script><script defer="defer" src="./static/js/main.33cac65c.js"></script><link href="./static/css/main.5513bd04.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+* Connection #0 to host pgl574b1yl.execute-api.eu-west-1.amazonaws.com left intact
+
+===== HTTPS CONNECTIVITY (COMMON HEALTH PATH) =====
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host pgl574b1yl.execute-api.eu-west-1.amazonaws.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 54.76.175.79, 54.77.84.4
+*   Trying 54.76.175.79:443...
+* schannel: disabled automatic use of client certificate
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to pgl574b1yl.execute-api.eu-west-1.amazonaws.com (54.76.175.79) port 443
+* using HTTP/1.x
+> GET /health HTTP/1.1
+> Host: pgl574b1yl.execute-api.eu-west-1.amazonaws.com
+> User-Agent: curl/8.12.1
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Date: Sun, 14 Dec 2025 19:33:40 GMT
+< Content-Type: text/html
+< Content-Length: 891
+< Connection: keep-alive
+< server: TornadoServer/6.5.3
+< accept-ranges: bytes
+< etag: "dc6df26b54ef96810fd4ff9271556d7ea55b11d9cc0f482bf926e6799f6e76a78d91a2c3cc93aa97e9be16c46ab15f66ac11789a762bde442c063c90712e860d"
+< last-modified: Fri, 12 Dec 2025 19:25:40 GMT
+< cache-control: no-cache
+< vary: Accept-Encoding
+< apigw-requestid: Vl-bOhq4DoEEMOw=
+< 
+{ [891 bytes data]
+100   891  100   891    0     0   7730      0 --:--:-- --:--:-- --:--:--  7747<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><link rel="shortcut icon" href="./favicon.png"/><link rel="preload" href="./static/media/SourceSansPro-Regular.0d69e5ff5e92ac64a0c9.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="./static/media/SourceSansPro-SemiBold.abed79cd0df1827e18cf.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="./static/media/SourceSansPro-Bold.118dea98980e20a81ced.woff2" as="font" type="font/woff2" crossorigin><title>Streamlit</title><script>window.prerenderReady=!1</script><script defer="defer" src="./static/js/main.33cac65c.js"></script><link href="./static/css/main.5513bd04.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+* Connection #0 to host pgl574b1yl.execute-api.eu-west-1.amazonaws.com left intact
+
+===== HTTPS CONNECTIVITY (COMMON API PATH) =====
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host pgl574b1yl.execute-api.eu-west-1.amazonaws.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 54.76.175.79, 54.77.84.4
+*   Trying 54.76.175.79:443...
+* schannel: disabled automatic use of client certificate
+* Connected to pgl574b1yl.execute-api.eu-west-1.amazonaws.com (54.76.175.79) port 443
+* using HTTP/1.x
+> GET /api HTTP/1.1
+> Host: pgl574b1yl.execute-api.eu-west-1.amazonaws.com
+> User-Agent: curl/8.12.1
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Date: Sun, 14 Dec 2025 19:33:40 GMT
+< Content-Type: text/html
+< Content-Length: 891
+< Connection: keep-alive
+< server: TornadoServer/6.5.3
+< accept-ranges: bytes
+< etag: "dc6df26b54ef96810fd4ff9271556d7ea55b11d9cc0f482bf926e6799f6e76a78d91a2c3cc93aa97e9be16c46ab15f66ac11789a762bde442c063c90712e860d"
+< last-modified: Fri, 12 Dec 2025 19:25:40 GMT
+< cache-control: no-cache
+< vary: Accept-Encoding
+< apigw-requestid: Vl-bQg-dDoEEMXw=
+< 
+{ [891 bytes data]
+100   891  100   891    0     0   6867      0 --:--:-- --:--:-- --:--:--  6960<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><link rel="shortcut icon" href="./favicon.png"/><link rel="preload" href="./static/media/SourceSansPro-Regular.0d69e5ff5e92ac64a0c9.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="./static/media/SourceSansPro-SemiBold.abed79cd0df1827e18cf.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="./static/media/SourceSansPro-Bold.118dea98980e20a81ced.woff2" as="font" type="font/woff2" crossorigin><title>Streamlit</title><script>window.prerenderReady=!1</script><script defer="defer" src="./static/js/main.33cac65c.js"></script><link href="./static/css/main.5513bd04.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+* Connection #0 to host pgl574b1yl.execute-api.eu-west-1.amazonaws.com left intact
+
+===== HEADERS ONLY (ROUTING CHECK) =====
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host pgl574b1yl.execute-api.eu-west-1.amazonaws.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 54.76.175.79, 54.77.84.4
+*   Trying 54.76.175.79:443...
+* schannel: disabled automatic use of client certificate
+* Connected to pgl574b1yl.execute-api.eu-west-1.amazonaws.com (54.76.175.79) port 443
+* using HTTP/1.x
+> HEAD / HTTP/1.1
+> Host: pgl574b1yl.execute-api.eu-west-1.amazonaws.com
+> User-Agent: curl/8.12.1
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Date: Sun, 14 Dec 2025 19:33:40 GMT
+< Content-Type: text/html
+< Content-Length: 891
+< Connection: keep-alive
+< server: TornadoServer/6.5.3
+< accept-ranges: bytes
+< etag: "dc6df26b54ef96810fd4ff9271556d7ea55b11d9cc0f482bf926e6799f6e76a78d91a2c3cc93aa97e9be16c46ab15f66ac11789a762bde442c063c90712e860d"
+< last-modified: Fri, 12 Dec 2025 19:25:40 GMT
+< cache-control: no-cache
+< vary: Accept-Encoding
+< apigw-requestid: Vl-bSjQkDoEEMRQ=
+< 
+  0   891    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/1.1 200 OK
+Date: Sun, 14 Dec 2025 19:33:40 GMT
+Content-Type: text/html
+Content-Length: 891
+Connection: keep-alive
+server: TornadoServer/6.5.3
+accept-ranges: bytes
+etag: "dc6df26b54ef96810fd4ff9271556d7ea55b11d9cc0f482bf926e6799f6e76a78d91a2c3cc93aa97e9be16c46ab15f66ac11789a762bde442c063c90712e860d"
+last-modified: Fri, 12 Dec 2025 19:25:40 GMT
+cache-control: no-cache
+vary: Accept-Encoding
+apigw-requestid: Vl-bSjQkDoEEMRQ=
+
+
+* Connection #0 to host pgl574b1yl.execute-api.eu-west-1.amazonaws.com left intact
+
