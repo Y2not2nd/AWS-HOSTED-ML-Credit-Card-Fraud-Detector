@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # -------------------------
 # Application code
 # -------------------------
-COPY app.py .
+COPY src/app.py .
 
 # -------------------------
 # Streamlit

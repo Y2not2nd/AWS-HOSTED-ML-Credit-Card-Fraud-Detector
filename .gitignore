@@ -28,3 +28,5 @@ kubeconfig*
 .env
   
 s3/credit-card-fraud/raw/
+
+frontend-v2/node_modules
