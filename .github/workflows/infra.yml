@@ -14,10 +14,13 @@ permissions:
 env:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
+  AWS_REGION: ${{ vars.AWS_REGION }}
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    environment: infra
+
     defaults:
       run:
         working-directory: infra
@@ -30,7 +33,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN_INFRA }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

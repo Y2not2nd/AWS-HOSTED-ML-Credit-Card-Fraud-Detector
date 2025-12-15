@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mlflow
+  labels:
+    app: mlflow
+  annotations:
+    {{- with .Values.serviceAccount.annotations }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: mlflow
+  labels:
+    app: mlflow
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mlflow
+  labels:
+    app: mlflow
+subjects:
+  - kind: ServiceAccount
+    name: mlflow
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: mlflow
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mlflow
+  labels:
+    app: mlflow
+data:
+  MLFLOW_HOST: {{ .Values.env.MLFLOW_HOST | quote }}
+  MLFLOW_PORT: {{ .Values.env.MLFLOW_PORT | quote }}
+  MLFLOW_BACKEND_STORE_URI: {{ .Values.env.MLFLOW_BACKEND_STORE_URI | quote }}
+  MLFLOW_DEFAULT_ARTIFACT_ROOT: {{ .Values.env.MLFLOW_DEFAULT_ARTIFACT_ROOT | quote }}

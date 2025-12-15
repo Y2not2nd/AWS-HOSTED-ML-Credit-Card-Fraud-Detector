@@ -1,18 +1,18 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: credit-fraud-inference
-  namespace: monitoring
+  name: mlflow
+  namespace: mlflow
   labels:
-    release: monitoring
+    app: mlflow
 spec:
   selector:
     matchLabels:
-      app: credit-fraud-inference
+      app: mlflow
   namespaceSelector:
     matchNames:
-      - ml-inference
+      - mlflow
   endpoints:
-    - port: http
+    - port: metrics
       path: /metrics
-      interval: 15s
+      interval: 30s

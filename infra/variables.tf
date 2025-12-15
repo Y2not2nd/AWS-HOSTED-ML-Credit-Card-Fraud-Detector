@@ -31,3 +31,14 @@ variable "github_ref" {
   type        = string
   default     = "refs/heads/main"
 }
+
+variable "frontend_domain_name" {
+  description = "Fully qualified domain name for the frontend (e.g. app.example.com)"
+  type        = string
+}
+
+variable "frontend_domain_zone" {
+  description = "Route53 hosted zone domain (e.g. example.com)"
+  type        = string
+}
+

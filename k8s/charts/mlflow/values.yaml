@@ -1,0 +1,56 @@
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/example/mlflow
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: mlflow
+  annotations: {}
+
+rbac:
+  create: true
+
+service:
+  type: ClusterIP
+  port: 5000
+
+containerPort: 5000
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+env:
+  MLFLOW_HOST: "0.0.0.0"
+  MLFLOW_PORT: "5000"
+  MLFLOW_BACKEND_STORE_URI: ""
+  MLFLOW_DEFAULT_ARTIFACT_ROOT: ""
+
+extraEnv: []
+
+command: []
+args: []
+
+livenessProbe:
+  enabled: true
+  path: /
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 6
+
+readinessProbe:
+  enabled: true
+  path: /
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 6

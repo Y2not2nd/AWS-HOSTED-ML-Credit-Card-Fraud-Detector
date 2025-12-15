@@ -1,7 +1,0 @@
-version: 1
-
-model_store:
-  type: s3
-  options:
-    bucket: mlops-model-store-prod
-    prefix: bentoml

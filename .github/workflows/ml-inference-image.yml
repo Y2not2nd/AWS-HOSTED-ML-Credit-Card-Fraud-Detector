@@ -8,14 +8,15 @@ permissions:
   contents: read
 
 env:
-  AWS_REGION: eu-west-1
-  ECR_REPOSITORY: yas-ml-inference
-  MODEL_BUCKET: mlops-model-store-prod
-  CANDIDATE_KEY: bentoml/models/CANDIDATE
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  MODEL_BUCKET: ${{ vars.MODEL_BUCKET }}
+  CANDIDATE_KEY: ${{ vars.CANDIDATE_KEY }}
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    environment: ml-platform
 
     steps:
       - name: Checkout repository
@@ -24,7 +25,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::581212334853:role/ml-platform-github-actions
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_BACKEND }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Verify AWS identity

@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-inference-blue
+  labels:
+    app: ml-inference
+    color: blue
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: ml-inference
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: ml-inference
+        color: blue
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: ml-inference
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: MODEL_BUCKET
+              value: {{ .Values.env.MODEL_BUCKET | quote }}
+            - name: MODEL_POINTER_KEY
+              value: {{ .Values.env.MODEL_POINTER_KEY | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-inference-green
+  labels:
+    app: ml-inference
+    color: green
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: ml-inference
+      color: green
+  template:
+    metadata:
+      labels:
+        app: ml-inference
+        color: green
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: ml-inference
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: MODEL_BUCKET
+              value: {{ .Values.env.MODEL_BUCKET | quote }}
+            - name: MODEL_POINTER_KEY
+              value: {{ .Values.env.MODEL_POINTER_KEY | quote }}

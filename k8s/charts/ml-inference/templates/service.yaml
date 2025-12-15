@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-inference
+  labels:
+    app: ml-inference
+spec:
+  selector:
+    app: ml-inference
+    color: {{ .Values.activeColor }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}

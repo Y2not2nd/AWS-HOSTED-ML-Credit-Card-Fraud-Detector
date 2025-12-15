@@ -1,0 +1,2388 @@
+]633;E;{   echo "### ML-INFERENCE: kubectl get all"\x3b   kubectl get all -n ml-inference -o yaml\x3b    echo "\\n### ML-INFERENCE: serviceaccounts"\x3b   kubectl get sa -n ml-inference -o yaml\x3b    echo "\\n### ML-INFERENCE: roles and rolebindings"\x3b   kubectl get role,rolebinding -n ml-inference -o yaml\x3b    echo "\\n### ML-INFERENCE: configmaps"\x3b   kubectl get configmap -n ml-inference -o yaml\x3b    echo "\\n### ML-INFERENCE: secrets"\x3b   kubectl get secret -n ml-inference -o yaml\x3b    echo "\\n### ML-INFERENCE: events"\x3b   kubectl get events -n ml-inference --sort-by=.metadata.creationTimestamp\x3b } > $OUT_DIR/ml-inference-full.yaml;6eabe6fa-72b9-494b-89de-19e3feeb3cf2]633;C### ML-INFERENCE: kubectl get all
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-12-13T23:43:49Z"
+    labels:
+      airflow_kpo_in_cluster: "True"
+      airflow_version: 3.0.2
+      dag_id: credit_card_model_promotion
+      kubernetes_pod_operator: "True"
+      run_id: manual__2025-12-13T234348.5015580000-e6d8a6f4e
+      task_id: promote_best_model
+      try_number: "1"
+    name: credit-card-model-promoter-e93e7amw
+    namespace: ml-inference
+    resourceVersion: "397709"
+    uid: 7097531e-679a-48e9-bde4-2d0070c66bd4
+  spec:
+    affinity: {}
+    containers:
+    - args:
+      - --experiment-name
+      - credit_card_fraud_detection
+      - --metric-threshold
+      - "0.95"
+      command:
+      - python
+      - -u
+      - /app/promotion/build_bento.py
+      env:
+      - name: BENTOML_CONFIG
+        value: /config/bentoml.yaml
+      - name: MLFLOW_TRACKING_URI
+        value: http://mlflow.mlflow.svc.cluster.local:5000
+      - name: AWS_STS_REGIONAL_ENDPOINTS
+        value: regional
+      - name: AWS_DEFAULT_REGION
+        value: eu-west-1
+      - name: AWS_REGION
+        value: eu-west-1
+      - name: AWS_ROLE_ARN
+        value: arn:aws:iam::581212334853:role/promotion-irsa-role
+      - name: AWS_WEB_IDENTITY_TOKEN_FILE
+        value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:model-promoter
+      imagePullPolicy: Always
+      name: base
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config
+        name: bentoml-config
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-nz465
+        readOnly: true
+      - mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+        name: aws-iam-token
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: ip-10-0-2-241.eu-west-1.compute.internal
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Never
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: model-promotion-sa
+    serviceAccountName: model-promotion-sa
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: aws-iam-token
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            audience: sts.amazonaws.com
+            expirationSeconds: 86400
+            path: token
+    - configMap:
+        defaultMode: 420
+        name: bentoml-s3-config
+      name: bentoml-config
+    - name: kube-api-access-nz465
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T23:48:00Z"
+      status: "False"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T23:43:49Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T23:47:59Z"
+      reason: PodFailed
+      status: "False"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T23:47:59Z"
+      reason: PodFailed
+      status: "False"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T23:43:49Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://fb51bddedfe6bab0ea12faf4657b092dd5665307afd84ad8544d4ae54542195c
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:model-promoter
+      imageID: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference@sha256:65eafa1423af53099ceb2011fd091fccf08892940478b2e578e65e92b8f0cd08
+      lastState: {}
+      name: base
+      ready: false
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://fb51bddedfe6bab0ea12faf4657b092dd5665307afd84ad8544d4ae54542195c
+          exitCode: 1
+          finishedAt: "2025-12-13T23:47:59Z"
+          reason: Error
+          startedAt: "2025-12-13T23:43:50Z"
+    hostIP: 10.0.2.241
+    hostIPs:
+    - ip: 10.0.2.241
+    phase: Failed
+    podIP: 10.0.2.228
+    podIPs:
+    - ip: 10.0.2.228
+    qosClass: BestEffort
+    startTime: "2025-12-13T23:43:49Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-12-13T21:13:16Z"
+    generateName: credit-fraud-inference-blue-78686cc574-
+    labels:
+      app: credit-fraud-inference
+      color: blue
+      pod-template-hash: 78686cc574
+    name: credit-fraud-inference-blue-78686cc574-c4zv4
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: credit-fraud-inference-blue-78686cc574
+      uid: cc110569-b47d-4492-a20d-d09e00434f3b
+    resourceVersion: "362776"
+    uid: f572a999-8f8f-4b35-8941-d503c4b160cc
+  spec:
+    containers:
+    - env:
+      - name: BENTOML_MODEL_REF
+        value: credit_card_fraud_classifier:latest
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-v2
+      imagePullPolicy: Always
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        successThreshold: 1
+        tcpSocket:
+          port: 3000
+        timeoutSeconds: 1
+      name: inference
+      ports:
+      - containerPort: 3000
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 15
+        periodSeconds: 30
+        successThreshold: 1
+        tcpSocket:
+          port: 3000
+        timeoutSeconds: 1
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-f8kxv
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: ip-10-0-2-241.eu-west-1.compute.internal
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: kube-api-access-f8kxv
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:13:43Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:13:16Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:14:16Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:14:16Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:13:16Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://4cfdcdb706085f7adf0c7451e5794fc400fe139c1a805ce9b7243f464ccde767
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-v2
+      imageID: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference@sha256:6369f3fa20833a49e1bdfff5694be14f227e369fa99dea4b65b4c02c8719b8ed
+      lastState: {}
+      name: inference
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-12-13T21:13:43Z"
+    hostIP: 10.0.2.241
+    hostIPs:
+    - ip: 10.0.2.241
+    phase: Running
+    podIP: 10.0.2.181
+    podIPs:
+    - ip: 10.0.2.181
+    qosClass: BestEffort
+    startTime: "2025-12-13T21:13:16Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-12-13T21:14:09Z"
+    generateName: credit-fraud-inference-blue-78686cc574-
+    labels:
+      app: credit-fraud-inference
+      color: blue
+      pod-template-hash: 78686cc574
+    name: credit-fraud-inference-blue-78686cc574-lnlwv
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: credit-fraud-inference-blue-78686cc574
+      uid: cc110569-b47d-4492-a20d-d09e00434f3b
+    resourceVersion: "363156"
+    uid: 93a9399b-2913-4969-a18c-efac240414b1
+  spec:
+    containers:
+    - env:
+      - name: BENTOML_MODEL_REF
+        value: credit_card_fraud_classifier:latest
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-v2
+      imagePullPolicy: Always
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        successThreshold: 1
+        tcpSocket:
+          port: 3000
+        timeoutSeconds: 1
+      name: inference
+      ports:
+      - containerPort: 3000
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 15
+        periodSeconds: 30
+        successThreshold: 1
+        tcpSocket:
+          port: 3000
+        timeoutSeconds: 1
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-bvp5m
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: ip-10-0-1-15.eu-west-1.compute.internal
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: kube-api-access-bvp5m
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:14:38Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:14:09Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:15:09Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:15:09Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-13T21:14:09Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://74e0f2a405dc84e6a88ea456960c376a9161eca61e4c69ebe54d0baf87c7e92a
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-v2
+      imageID: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference@sha256:6369f3fa20833a49e1bdfff5694be14f227e369fa99dea4b65b4c02c8719b8ed
+      lastState: {}
+      name: inference
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-12-13T21:14:38Z"
+    hostIP: 10.0.1.15
+    hostIPs:
+    - ip: 10.0.1.15
+    phase: Running
+    podIP: 10.0.1.127
+    podIPs:
+    - ip: 10.0.1.127
+    qosClass: BestEffort
+    startTime: "2025-12-13T21:14:09Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/restartedAt: "2025-12-14T03:56:11Z"
+    creationTimestamp: "2025-12-14T03:56:42Z"
+    generateName: credit-fraud-inference-green-7bcdbf87d8-
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 7bcdbf87d8
+    name: credit-fraud-inference-green-7bcdbf87d8-5tqh8
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: credit-fraud-inference-green-7bcdbf87d8
+      uid: 9b50c1aa-ac97-43a2-a96f-ac1ec1bec23f
+    resourceVersion: "455059"
+    uid: 574ca77c-1173-4ace-b6d7-a3668b5df28a
+  spec:
+    containers:
+    - env:
+      - name: BENTO_S3_BUCKET
+        value: mlops-model-store-prod
+      - name: BENTO_S3_PREFIX
+        value: bentoml/models
+      - name: BENTOML_MODEL_STAGE
+        value: CANDIDATE
+      - name: BENTOML_HOME
+        value: /tmp/bentoml
+      - name: AWS_STS_REGIONAL_ENDPOINTS
+        value: regional
+      - name: AWS_DEFAULT_REGION
+        value: eu-west-1
+      - name: AWS_REGION
+        value: eu-west-1
+      - name: AWS_ROLE_ARN
+        value: arn:aws:iam::581212334853:role/credit-fraud-inference-green-irsa
+      - name: AWS_WEB_IDENTITY_TOKEN_FILE
+        value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
+      imagePullPolicy: Always
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        successThreshold: 1
+        tcpSocket:
+          port: 3000
+        timeoutSeconds: 1
+      name: inference
+      ports:
+      - containerPort: 3000
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 15
+        periodSeconds: 30
+        successThreshold: 1
+        tcpSocket:
+          port: 3000
+        timeoutSeconds: 1
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-bw7sl
+        readOnly: true
+      - mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+        name: aws-iam-token
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: ip-10-0-1-15.eu-west-1.compute.internal
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: credit-fraud-inference-green-sa
+    serviceAccountName: credit-fraud-inference-green-sa
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: aws-iam-token
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            audience: sts.amazonaws.com
+            expirationSeconds: 86400
+            path: token
+    - name: kube-api-access-bw7sl
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:56:51Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:56:42Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:57:13Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:57:13Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:56:42Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://2c0881a00969ec50c169513e8fe02c2a31ed7aca60abaa17163138dbf4f7a530
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
+      imageID: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference@sha256:a8e5c063bc0d09ca35f7e4b93f269a93f11a663e0af0e98929aa20b32501bbeb
+      lastState: {}
+      name: inference
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-12-14T03:56:51Z"
+    hostIP: 10.0.1.15
+    hostIPs:
+    - ip: 10.0.1.15
+    phase: Running
+    podIP: 10.0.1.89
+    podIPs:
+    - ip: 10.0.1.89
+    qosClass: BestEffort
+    startTime: "2025-12-14T03:56:42Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/restartedAt: "2025-12-14T03:56:11Z"
+    creationTimestamp: "2025-12-14T03:56:12Z"
+    generateName: credit-fraud-inference-green-7bcdbf87d8-
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 7bcdbf87d8
+    name: credit-fraud-inference-green-7bcdbf87d8-qm262
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: credit-fraud-inference-green-7bcdbf87d8
+      uid: 9b50c1aa-ac97-43a2-a96f-ac1ec1bec23f
+    resourceVersion: "454919"
+    uid: 5f390e85-dad0-42df-a390-c1f3b8693d4a
+  spec:
+    containers:
+    - env:
+      - name: BENTO_S3_BUCKET
+        value: mlops-model-store-prod
+      - name: BENTO_S3_PREFIX
+        value: bentoml/models
+      - name: BENTOML_MODEL_STAGE
+        value: CANDIDATE
+      - name: BENTOML_HOME
+        value: /tmp/bentoml
+      - name: AWS_STS_REGIONAL_ENDPOINTS
+        value: regional
+      - name: AWS_DEFAULT_REGION
+        value: eu-west-1
+      - name: AWS_REGION
+        value: eu-west-1
+      - name: AWS_ROLE_ARN
+        value: arn:aws:iam::581212334853:role/credit-fraud-inference-green-irsa
+      - name: AWS_WEB_IDENTITY_TOKEN_FILE
+        value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
+      imagePullPolicy: Always
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        successThreshold: 1
+        tcpSocket:
+          port: 3000
+        timeoutSeconds: 1
+      name: inference
+      ports:
+      - containerPort: 3000
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 15
+        periodSeconds: 30
+        successThreshold: 1
+        tcpSocket:
+          port: 3000
+        timeoutSeconds: 1
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-csd6h
+        readOnly: true
+      - mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+        name: aws-iam-token
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: ip-10-0-2-241.eu-west-1.compute.internal
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: credit-fraud-inference-green-sa
+    serviceAccountName: credit-fraud-inference-green-sa
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: aws-iam-token
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            audience: sts.amazonaws.com
+            expirationSeconds: 86400
+            path: token
+    - name: kube-api-access-csd6h
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:56:13Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:56:12Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:56:42Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:56:42Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T03:56:12Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://791e875159ab736e8300a035469869c687a959edec3f922128ce8e5f574e4f3a
+      image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
+      imageID: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference@sha256:a8e5c063bc0d09ca35f7e4b93f269a93f11a663e0af0e98929aa20b32501bbeb
+      lastState: {}
+      name: inference
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-12-14T03:56:13Z"
+    hostIP: 10.0.2.241
+    hostIPs:
+    - ip: 10.0.2.241
+    phase: Running
+    podIP: 10.0.2.39
+    podIPs:
+    - ip: 10.0.2.39
+    qosClass: BestEffort
+    startTime: "2025-12-14T03:56:12Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-12-14T09:07:03Z"
+    labels:
+      run: mlflow-inspect
+    name: mlflow-inspect
+    namespace: ml-inference
+    resourceVersion: "524030"
+    uid: 57d6d5d4-0524-45e8-81fa-dc3877c97055
+  spec:
+    containers:
+    - command:
+      - bash
+      - -lc
+      - "\n    set -eux\n    pip -q install \"mlflow<3\" pandas\n    python - << \"PY\"\nimport
+        os\nimport mlflow\nfrom mlflow.tracking import MlflowClient\n\nTRACKING_URI
+        = \"http://mlflow.mlflow.svc.cluster.local:5000\"\nEXPERIMENT_NAME = \"credit_card_fraud_detection\"
+        \ # change only if step B shows different\nos.environ[\"MLFLOW_TRACKING_URI\"]
+        = TRACKING_URI\nmlflow.set_tracking_uri(TRACKING_URI)\n\nc = MlflowClient()\nexp
+        = c.get_experiment_by_name(EXPERIMENT_NAME)\nif not exp:\n    raise SystemExit(f\"Experiment
+        not found: {EXPERIMENT_NAME}\")\n\nruns = c.search_runs(\n    experiment_ids=[exp.experiment_id],\n
+        \   filter_string=\"\",\n    order_by=[\"metrics.roc_auc DESC\"],\n    max_results=1,\n)\nif
+        not runs:\n    raise SystemExit(\"No runs found in experiment\")\n\nbest =
+        runs[0]\nrun_id = best.info.run_id\nprint(\"Best run_id:\", run_id)\nprint(\"Best
+        roc_auc:\", best.data.metrics.get(\"roc_auc\"))\n\ndef walk(path=\"\"):\n
+        \   items = c.list_artifacts(run_id, path)\n    for it in items:\n        if
+        it.is_dir:\n            walk(it.path)\n        else:\n            print(it.path)\n\nprint(\"Artifacts
+        for best run:\")\nwalk(\"\")\nPY\n  "
+      image: python:3.11-slim
+      imagePullPolicy: IfNotPresent
+      name: mlflow-inspect
+      resources: {}
+      stdin: true
+      stdinOnce: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      tty: true
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-5sj7r
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: ip-10-0-1-15.eu-west-1.compute.internal
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Never
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: kube-api-access-5sj7r
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T09:07:53Z"
+      status: "False"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T09:07:03Z"
+      reason: PodCompleted
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T09:07:51Z"
+      reason: PodCompleted
+      status: "False"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T09:07:51Z"
+      reason: PodCompleted
+      status: "False"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-12-14T09:07:03Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://23e38dde12725e9365696eb721d74733e1720945f81ec05113701705606f9c0f
+      image: docker.io/library/python:3.11-slim
+      imageID: docker.io/library/python@sha256:158caf0e080e2cd74ef2879ed3c4e697792ee65251c8208b7afb56683c32ea6c
+      lastState: {}
+      name: mlflow-inspect
+      ready: false
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://23e38dde12725e9365696eb721d74733e1720945f81ec05113701705606f9c0f
+          exitCode: 0
+          finishedAt: "2025-12-14T09:07:50Z"
+          reason: Completed
+          startedAt: "2025-12-14T09:07:05Z"
+    hostIP: 10.0.1.15
+    hostIPs:
+    - ip: 10.0.1.15
+    phase: Succeeded
+    podIP: 10.0.1.12
+    podIPs:
+    - ip: 10.0.1.12
+    qosClass: BestEffort
+    startTime: "2025-12-14T09:07:03Z"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"credit-fraud-inference","namespace":"ml-inference"},"spec":{"ports":[{"name":"http","port":3000,"targetPort":3000}],"selector":{"app":"credit-fraud-inference","color":"blue"}}}
+      meta.helm.sh/release-name: credit-fraud-inference
+      meta.helm.sh/release-namespace: ml-inference
+    creationTimestamp: "2025-12-12T19:18:06Z"
+    labels:
+      app: credit-fraud-inference
+      app.kubernetes.io/managed-by: Helm
+    name: credit-fraud-inference
+    namespace: ml-inference
+    resourceVersion: "456661"
+    uid: f46bf80b-f79d-42ff-9006-c8c46c33654b
+  spec:
+    clusterIP: 172.20.133.8
+    clusterIPs:
+    - 172.20.133.8
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+    selector:
+      app: credit-fraud-inference
+      color: green
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"credit-fraud-inference"},"name":"credit-fraud-inference-metrics","namespace":"ml-inference"},"spec":{"ports":[{"name":"metrics","port":3000,"targetPort":3000}],"selector":{"app":"credit-fraud-inference"}}}
+    creationTimestamp: "2025-12-15T02:30:12Z"
+    labels:
+      app: credit-fraud-inference
+    name: credit-fraud-inference-metrics
+    namespace: ml-inference
+    resourceVersion: "761868"
+    uid: a2605c1a-9328-4c1d-93fa-1936e71deb81
+  spec:
+    clusterIP: 172.20.140.217
+    clusterIPs:
+    - 172.20.140.217
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: metrics
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+    selector:
+      app: credit-fraud-inference
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"credit-fraud-inference","color":"blue"},"name":"credit-fraud-inference-blue","namespace":"ml-inference"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"credit-fraud-inference","color":"blue"}},"template":{"metadata":{"labels":{"app":"credit-fraud-inference","color":"blue"}},"spec":{"containers":[{"env":[{"name":"BENTOML_MODEL_REF","value":"credit_card_fraud_classifier:latest"}],"image":"581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-v2","imagePullPolicy":"Always","livenessProbe":{"initialDelaySeconds":30,"periodSeconds":30,"tcpSocket":{"port":3000}},"name":"inference","ports":[{"containerPort":3000}],"readinessProbe":{"initialDelaySeconds":15,"periodSeconds":30,"tcpSocket":{"port":3000}}}]}}}}
+    creationTimestamp: "2025-12-13T18:37:55Z"
+    generation: 1
+    labels:
+      app: credit-fraud-inference
+      color: blue
+    name: credit-fraud-inference-blue
+    namespace: ml-inference
+    resourceVersion: "363161"
+    uid: b970f288-c445-4a4c-8447-44ae68a0ce5c
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: blue
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: blue
+      spec:
+        containers:
+        - env:
+          - name: BENTOML_MODEL_REF
+            value: credit_card_fraud_classifier:latest
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-v2
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-12-13T18:37:55Z"
+      lastUpdateTime: "2025-12-13T18:38:25Z"
+      message: ReplicaSet "credit-fraud-inference-blue-78686cc574" has successfully
+        progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-12-13T21:15:09Z"
+      lastUpdateTime: "2025-12-13T21:15:09Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "24"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"credit-fraud-inference","color":"green"},"name":"credit-fraud-inference-green","namespace":"ml-inference"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"credit-fraud-inference","color":"green"}},"template":{"metadata":{"labels":{"app":"credit-fraud-inference","color":"green"}},"spec":{"containers":[{"env":[{"name":"BENTO_S3_BUCKET","value":"mlops-model-store-prod"},{"name":"BENTO_S3_PREFIX","value":"bentoml/models"},{"name":"BENTOML_MODEL_STAGE","value":"CANDIDATE"},{"name":"BENTOML_HOME","value":"/tmp/bentoml"}],"image":"581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7","imagePullPolicy":"Always","livenessProbe":{"initialDelaySeconds":30,"periodSeconds":30,"tcpSocket":{"port":3000}},"name":"inference","ports":[{"containerPort":3000}],"readinessProbe":{"initialDelaySeconds":15,"periodSeconds":30,"tcpSocket":{"port":3000}}}],"serviceAccountName":"credit-fraud-inference-green-sa"}}}}
+    creationTimestamp: "2025-12-13T18:37:57Z"
+    generation: 24
+    labels:
+      app: credit-fraud-inference
+      color: green
+    name: credit-fraud-inference-green
+    namespace: ml-inference
+    resourceVersion: "455070"
+    uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 2
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:56:11Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    conditions:
+    - lastTransitionTime: "2025-12-14T03:57:13Z"
+      lastUpdateTime: "2025-12-14T03:57:13Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-12-14T03:07:09Z"
+      lastUpdateTime: "2025-12-14T03:57:13Z"
+      message: ReplicaSet "credit-fraud-inference-green-7bcdbf87d8" has successfully
+        progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 24
+    readyReplicas: 2
+    replicas: 2
+    updatedReplicas: 2
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2025-12-13T18:37:55Z"
+    generation: 1
+    labels:
+      app: credit-fraud-inference
+      color: blue
+      pod-template-hash: 78686cc574
+    name: credit-fraud-inference-blue-78686cc574
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-blue
+      uid: b970f288-c445-4a4c-8447-44ae68a0ce5c
+    resourceVersion: "363158"
+    uid: cc110569-b47d-4492-a20d-d09e00434f3b
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: blue
+        pod-template-hash: 78686cc574
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: blue
+          pod-template-hash: 78686cc574
+      spec:
+        containers:
+        - env:
+          - name: BENTOML_MODEL_REF
+            value: credit_card_fraud_classifier:latest
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-v2
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    fullyLabeledReplicas: 2
+    observedGeneration: 1
+    readyReplicas: 2
+    replicas: 2
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "21"
+    creationTimestamp: "2025-12-14T03:46:32Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 55d45c5bdd
+    name: credit-fraud-inference-green-55d45c5bdd
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "454787"
+    uid: 5a8bdba5-2a85-4385-ac3e-765fa718d499
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 55d45c5bdd
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:46:31Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 55d45c5bdd
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v6
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "22"
+    creationTimestamp: "2025-12-14T03:49:09Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 645979d487
+    name: credit-fraud-inference-green-645979d487
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "454929"
+    uid: bea7880f-d9e5-414b-8109-2a8365ec6435
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 645979d487
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:49:08Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 645979d487
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v6
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "19"
+    creationTimestamp: "2025-12-14T03:38:52Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 684b79fcd4
+    name: credit-fraud-inference-green-684b79fcd4
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "453080"
+    uid: edce0403-5308-4f0a-a720-84206f542ea1
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 684b79fcd4
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:38:52Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 684b79fcd4
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v6
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "17"
+    creationTimestamp: "2025-12-14T03:35:13Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 69d87fcf74
+    name: credit-fraud-inference-green-69d87fcf74
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "451555"
+    uid: 9daed9d2-8856-43b6-92b4-c25ce472ebc9
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 69d87fcf74
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:35:13Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 69d87fcf74
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v6
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "20"
+    creationTimestamp: "2025-12-14T03:42:53Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 746869b699
+    name: credit-fraud-inference-green-746869b699
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "453319"
+    uid: 7a4e6dea-a3da-41fa-a052-603b1c61c343
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 746869b699
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:42:52Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 746869b699
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v6
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "15"
+    creationTimestamp: "2025-12-14T03:32:49Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 756fb6dc5b
+    name: credit-fraud-inference-green-756fb6dc5b
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "449928"
+    uid: 23c55099-7d45-4094-91c9-1f8fa326fc14
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 756fb6dc5b
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:25:59Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 756fb6dc5b
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v5
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "23"
+    creationTimestamp: "2025-12-14T03:49:57Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 765d4dccc8
+    name: credit-fraud-inference-green-765d4dccc8
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "455069"
+    uid: 0deb87ee-cda3-42a3-b5e4-0fdc5b64a0f3
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 765d4dccc8
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:49:08Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 765d4dccc8
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "18"
+    creationTimestamp: "2025-12-14T03:36:12Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 7996bc5dbb
+    name: credit-fraud-inference-green-7996bc5dbb
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "452424"
+    uid: baf075ed-2db8-4c2e-8e3f-47dd92e835b8
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 7996bc5dbb
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:36:12Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 7996bc5dbb
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v6
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "24"
+    creationTimestamp: "2025-12-14T03:56:12Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 7bcdbf87d8
+    name: credit-fraud-inference-green-7bcdbf87d8
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "455060"
+    uid: 9b50c1aa-ac97-43a2-a96f-ac1ec1bec23f
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 7bcdbf87d8
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:56:11Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 7bcdbf87d8
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v7
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 2
+    fullyLabeledReplicas: 2
+    observedGeneration: 3
+    readyReplicas: 2
+    replicas: 2
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "16"
+    creationTimestamp: "2025-12-14T03:35:02Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: 887445dd7
+    name: credit-fraud-inference-green-887445dd7
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "450606"
+    uid: f2cb54e7-3723-449b-b54d-85a5c40473e4
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: 887445dd7
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:25:59Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: 887445dd7
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v6
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "2"
+      deployment.kubernetes.io/max-replicas: "3"
+      deployment.kubernetes.io/revision: "14"
+    creationTimestamp: "2025-12-14T03:25:59Z"
+    generation: 3
+    labels:
+      app: credit-fraud-inference
+      color: green
+      pod-template-hash: f49d47997
+    name: credit-fraud-inference-green-f49d47997
+    namespace: ml-inference
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: credit-fraud-inference-green
+      uid: 51f70c7e-e9ea-47a0-8162-a8c39249f3d5
+    resourceVersion: "449649"
+    uid: af7e05c3-8f43-4695-bdd7-9a2d919f2110
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app: credit-fraud-inference
+        color: green
+        pod-template-hash: f49d47997
+    template:
+      metadata:
+        annotations:
+          kubectl.kubernetes.io/restartedAt: "2025-12-14T03:25:59Z"
+        creationTimestamp: null
+        labels:
+          app: credit-fraud-inference
+          color: green
+          pod-template-hash: f49d47997
+      spec:
+        containers:
+        - env:
+          - name: BENTO_S3_BUCKET
+            value: mlops-model-store-prod
+          - name: BENTO_S3_PREFIX
+            value: bentoml/models
+          - name: BENTOML_MODEL_STAGE
+            value: CANDIDATE
+          - name: BENTOML_HOME
+            value: /tmp/bentoml
+          image: 581212334853.dkr.ecr.eu-west-1.amazonaws.com/yas-ml-inference:backend-final-v4
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          name: inference
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: credit-fraud-inference-green-sa
+        serviceAccountName: credit-fraud-inference-green-sa
+        terminationGracePeriodSeconds: 30
+  status:
+    observedGeneration: 3
+    replicas: 0
+kind: List
+metadata:
+  resourceVersion: ""
+\n### ML-INFERENCE: serviceaccounts
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::581212334853:role/credit-fraud-inference-green-irsa
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"eks.amazonaws.com/role-arn":"arn:aws:iam::581212334853:role/credit-fraud-inference-green-irsa"},"name":"credit-fraud-inference-green-sa","namespace":"ml-inference"}}
+    creationTimestamp: "2025-12-13T19:05:02Z"
+    name: credit-fraud-inference-green-sa
+    namespace: ml-inference
+    resourceVersion: "331028"
+    uid: 787df77e-eaa6-4cb0-a7b1-83b80b2f2cdb
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    creationTimestamp: "2025-12-12T18:14:40Z"
+    name: default
+    namespace: ml-inference
+    resourceVersion: "3292"
+    uid: 4418d3eb-bba6-4267-9367-535d2f71dee5
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::581212334853:role/promotion-irsa-role
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{"eks.amazonaws.com/role-arn":"arn:aws:iam::581212334853:role/promotion-irsa-role"},"name":"model-promotion-sa","namespace":"ml-inference"}}
+    creationTimestamp: "2025-12-13T19:34:25Z"
+    name: model-promotion-sa
+    namespace: ml-inference
+    resourceVersion: "338687"
+    uid: 867992f6-3e10-47c4-a8c0-11e3109598e0
+kind: List
+metadata:
+  resourceVersion: ""
+\n### ML-INFERENCE: roles and rolebindings
+apiVersion: v1
+items:
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"Role","metadata":{"annotations":{},"name":"airflow-pod-creator","namespace":"ml-inference"},"rules":[{"apiGroups":[""],"resources":["pods","pods/log","pods/status"],"verbs":["create","get","list","watch","delete","patch"]},{"apiGroups":[""],"resources":["events"],"verbs":["create","get","list","watch","delete"]}]}
+    creationTimestamp: "2025-12-13T20:32:44Z"
+    name: airflow-pod-creator
+    namespace: ml-inference
+    resourceVersion: "365742"
+    uid: e61324b6-2685-4aed-aeaf-780172139e40
+  rules:
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - pods/log
+    - pods/status
+    verbs:
+    - create
+    - get
+    - list
+    - watch
+    - delete
+    - patch
+  - apiGroups:
+    - ""
+    resources:
+    - events
+    verbs:
+    - create
+    - get
+    - list
+    - watch
+    - delete
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{},"name":"airflow-pod-creator-binding","namespace":"ml-inference"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"airflow-pod-creator"},"subjects":[{"kind":"ServiceAccount","name":"airflow-scheduler","namespace":"airflow"}]}
+    creationTimestamp: "2025-12-13T20:32:51Z"
+    name: airflow-pod-creator-binding
+    namespace: ml-inference
+    resourceVersion: "351726"
+    uid: 92490bbf-bc6a-4505-93a2-758fd4870259
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: airflow-pod-creator
+  subjects:
+  - kind: ServiceAccount
+    name: airflow-scheduler
+    namespace: airflow
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"rbac.authorization.k8s.io/v1","kind":"RoleBinding","metadata":{"annotations":{},"name":"airflow-pod-creator-binding-worker","namespace":"ml-inference"},"roleRef":{"apiGroup":"rbac.authorization.k8s.io","kind":"Role","name":"airflow-pod-creator"},"subjects":[{"kind":"ServiceAccount","name":"airflow-worker","namespace":"airflow"}]}
+    creationTimestamp: "2025-12-13T21:23:41Z"
+    name: airflow-pod-creator-binding-worker
+    namespace: ml-inference
+    resourceVersion: "365383"
+    uid: 18d8c9f9-8fde-4d6f-a38f-c4df656370a4
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: airflow-pod-creator
+  subjects:
+  - kind: ServiceAccount
+    name: airflow-worker
+    namespace: airflow
+kind: List
+metadata:
+  resourceVersion: ""
+\n### ML-INFERENCE: configmaps
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    bentoml.yaml: |
+      version: 1
+      stores:
+        models:
+          type: s3
+          options:
+            bucket: mlops-model-store-prod
+            prefix: bentoml
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"bentoml.yaml":"version: 1\nstores:\n  models:\n    type: s3\n    options:\n      bucket: mlops-model-store-prod\n      prefix: bentoml\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"bentoml-s3-config","namespace":"ml-inference"}}
+    creationTimestamp: "2025-12-14T01:46:18Z"
+    name: bentoml-s3-config
+    namespace: ml-inference
+    resourceVersion: "427703"
+    uid: d3d6b893-3b12-4735-9b46-7c802fe4e1a1
+- apiVersion: v1
+  data:
+    ca.crt: |
+      -----BEGIN CERTIFICATE-----
+      MIIDBTCCAe2gAwIBAgIIMzb189Czfx0wDQYJKoZIhvcNAQELBQAwFTETMBEGA1UE
+      AxMKa3ViZXJuZXRlczAeFw0yNTEyMTIxNzUyMjdaFw0zNTEyMTAxNzU3MjdaMBUx
+      EzARBgNVBAMTCmt1YmVybmV0ZXMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+      AoIBAQDmrfnjfyIgSekT7uGI6kgy/7CkfC4cCVqRKy1aauLTFBhkF+hQhfu3kBrv
+      wo+bZdTMLougqhL18E1DfJyZSnhCu0C2ZplhIlejhoXgaATdJg8ZY2EcurERXNSN
+      BmhIzmbHrJ4GF0tty48+Mp9yQDtBUCPYY6qSygOeG1sbDrtVWUyDeUja/f3kTax0
+      uiZpa2cVVQBoIPCpOwKvaMQbCPomq9tugxlgbHSasfO+p6fjn0WvW4guEVR+A2l+
+      r3VGOAL46yX31tOz2IRCioLgxSFvwmpod0bOPeMYzNRmsrSpnQPzJH4WXDnnXREQ
+      wT5N5U8a+Dl5gb2haxGgJT6W9uCVAgMBAAGjWTBXMA4GA1UdDwEB/wQEAwICpDAP
+      BgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRebos98sU9n0hXRBdUEpcodFYsWTAV
+      BgNVHREEDjAMggprdWJlcm5ldGVzMA0GCSqGSIb3DQEBCwUAA4IBAQAXsYBau1oM
+      q0cjnQFLJzMprF4rSJgzPGru1LSVxGumvLAjcL1jb+PVrAAgp83dxR2bYN4nK64r
+      rTLtV1TavsMEP9scXpgiZQxxk6YlAhf/ERo9H2lf/xgtLB0gwsFbgp5QaMIzjMnx
+      x5LTdC33AsGQ78XUYaXJle5NXCySJzptp0illiU9DBPltmbds+FVLvDk/AbGBZB5
+      fA3L/2gwGIsbuDuuwTXHjlhCq8r01ye1lBEtIq3ZhkORAGYQd5aUZk7ZcPguyw7E
+      fXplK6wcjjszdbx5E9XaqL1qwOdt99WTYmPDZFV/YwaAB3OOuMXFzZMELDvnSWST
+      D/V7+oOOx+jG
+      -----END CERTIFICATE-----
+  kind: ConfigMap
+  metadata:
+    annotations:
+      kubernetes.io/description: Contains a CA bundle that can be used to verify the
+        kube-apiserver when using internal endpoints such as the internal service
+        IP or kubernetes.default.svc. No other usage is guaranteed across distributions
+        of Kubernetes clusters.
+    creationTimestamp: "2025-12-12T18:14:40Z"
+    name: kube-root-ca.crt
+    namespace: ml-inference
+    resourceVersion: "3291"
+    uid: d012d6ea-d483-4135-a283-f7c961cd007a
+kind: List
+metadata:
+  resourceVersion: ""
+\n### ML-INFERENCE: secrets
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    release: SDRzSUFBQUFBQUFDLzdSNmEyK2p2UGJ2VjRrNGI4NlIyajVjU3FlSjlIOFJhQU9raERZa1hQZHNiWUdoUUxDQkNaQ0ViTTEzUDdKSnlMWFQ2VHpQdjFMVll1emxkVisvWmZOZkt2TlFTQTBvc0F5RHBMcDlYM3AxY0p0azcrRXl6RUJJM1ZCSjlwNVRnLzlTNzhteXJQNFRoQVhNbXpDZ0JoUkxzL3d0dzk0eTdKenBENWpIQWMzZmZlUDY5NC8zank1MVEwSHZTOU9ERUlZVm1VZ2VTckJNaWlySk0ycEFLVmxaZVJEMlFJNEtQSW02b2NyS3ErcVNHbERkQmpkVWxsY2hIbUx1ZWxKWTlhbzQ3SGxGQVJQZ1lUbzlRMWQ3ZnROYjFsbVdaQkYrWFlhWUpQS3lvQng4ejZpZk54U0l2V1dGaFVWaDVRVmU1ZUgvUDFQUUtseVdMYVAwSFhOSFg3QXZrb1U5NEMyREhsbmQ2MWIzeW5DNVNrRFkrNzlDbUZYNVJQMS8xQTNsRlluWmtWeXhaS1E0akRCM05ObWthZ3JNMXBHSVdBS1lnNVFhWkRXRU4xUVZvZ0o2UkNuLzZzVG9Cdi9TWHVmUHM3dHFVMkdPaWF6VVpIWWY2YXhKSzdLZXV6TWhCckpRZXBZV0J4SmMrWWxnR3VrNmNySTBBcGxaK3dqV2JpUFFubVJ1M1ptdzhGbW1jaXcrQmR2OEplVEtTcEVnVWtUZWNxd040OXFUMnJQNERDQnpDeG9lK21pVStKS1pLakxURjdQcW16b1RHc2ZpTTNjMlREMnB2dzNFNGNQYmJGaWJhRlFHbHJsVjhWN2NHQUp1VXBQMzhpUjZ0K2tYUlJTK2hRMGRBVFNxWGRhSTFFeUlBeW5lRXJySk1QSmtuUVp5OWEzbFpYcVZYaUJ0eUh6QTRYbG03WXBDLzMyZXIxVDhMT3E1ejJtMGl1SVY0S2JSdTgxOEM1dGhEYVFSN2VGNTB6eFNaTUkvOU5HVThOVEt2cU16TFFoL3JyWEJPaXJjQk91SnB4MEwxcUFaSm5QVVQxMVRXSUZzbWh6ckNyQm1FeUM0Y0djOEhkb0MzTXZqMnZIYTU4YTA4c3kvNmMvbXUvSGNuNWxQZFBvaVZZeUR6RVVnclNNWDIwK2tLeCtOS3RmVzFvNmxRY3lqSXZJejE5cEF4OWFnbXZLeGI1bGJJSTBXN2t6b3Y4K0dsZDhJUHdEYmIyVjdvcE93NGJkQU1oZHFodm5UdDlaV0NGVEVyMXpKbkdJZTNtZEsxUEZwVDZLUUt5UFA0aGUrYktidWJKZzQzQmk2RXFSVnkyMGMyMHhWQzlZdU1odlg0ckZjS0xBMkplRnhwa1JxZ25sSXNUMWhLQk45UlBPMC82eWIvYkZ4VFQ2SjhMSDloK1FzQXNtc0FGT3U3Um0vRGFRUkhkaVQyckgwbFBncmErNWtINld1akgxRzZ5dEp5NnZEeGl0Rml1bEFIajZveldONjREbmYveitkTTJOajUrUFFselZJZkZIU1ZuNm14NTdGYnhWeFBQSFpVVHBGbzlMQnVyR1YzL0lGUlJ4aUhSbjZQSTltOWpUeXJSR3Z5SHJzc1Via3pBVGsyaUR5TFZnSHRnNUJJeUNmVTZKQWlxSHl2Rms1bGk0NjFpYjJrUVpCSW93TlVhRDlSa2h3ekFkb1ZQZ1NqaytqM3Urei83V3NQcU5JV3V3bkF1Zlkrc0lUaFFMSEl1RDBPSkROclNLTmVVVWVNejdpQ3grQmFNeitYYjhVdGdHYVJLb04vZ0gvQWlmK1pkRG16RXpoMDRjK0ptdXMwd3dyMVRyaGljUy9nY3pTdFVaYmQ4YS9PaFlEQVNmRURtdmcrUDhIK0J4V3FxMUQzeFpLeDlhaElvNi9oUTMrN1hKazdsbDg2dHBScEdZYTdkZzZBeHErUFBPaG8zdzdYTDlnWGRyVk56VmorcGcvMStKSjdsVXk1a05mUHRWUFFlVHU4bWVtUVpDNWhjTWFOWkQ2VGZBYnVXN0tiaGpBNlJDa2NLb2sxMmtGTWx3VHUrTzhLcG4zTzlyVE9hMi96OU9ScHMrdjJVbFl1ZklrVW1kTWZXd0xMS2NLeDlDWHpCaXdSajAvOFR1bXI0aE1xWWpqR01qRDJ1UE14TFhIdFV0aWhTLzhwazlvdmRta2R0UU91MkZjeVlnVXBEV3VwUmVCeUNDQVJvd3JNb1dQWEFpUVdXUCtUKzI0K1loMjRXTzdZVHZObWF2K1JQaExQczFWbFd2cnNTdU5hR2ZHRTM3ZlowcHhXaWUwdHpuVWhabkJqd3pZNXFLMzJUUW5QRmthN1l0QzV0clRDRWo5OUE5eWFXbzg5NTl0bWhmbWhoR3AxbVBrWlRpdjRSb2M5WldzckFFblFLZmhPejl3N1hHYlMwOXFTcGNMSVlCay9OUW54YkhsMlZvUmlFSWV5UHI2TlhsY1RlWUtweTZHOVVTODM3d3VvdlhyMHpBS3BNY29zREhmY0JYWVN1VFl3dHFYNE1LeDljSm43eE9DQnpxNXZ4N1hyUzh5eU9mR25HT1BVMFhVRDM0NUc5NVBucUwxYTZJL3pXbmVtQnJ3VlRmSGJYMGU3dU9palRreCtwLy9vWDdlWEFGay80bERXSVRMOHE0cTRBR1RoVnk1ZW9tS1VTZ0xNY1lZSklkTG1IY2o4bGxuOTZ6bGpqMm0xU2ovb1hJZHBrcGR5eTE4OUFXL3RVL1d4b0cxb1JXUmYvS2tVUk9JTzk4OHFrMWtuZEZuWFh2Y2VKWU9GWGtkQlNUL1R5SnRNWW5lUllFR0NGWUdaeUlYd1h0RlZDb2xPYzRWZTUzZzU4Y2ZZb3I1SE5HNERpbVNEbDAwWW54NUdybVpXZnB5R2dIYmpIMEpJczh5VTBVYXJZRW9FTDlYbzhKMlp3S05jYW5EdHVzRGNjaE9HbUdCZVFlNHRtRWNTL3hEVzJIZHpVN2lzcVdqU0c3aFdwc1VORUlNa0JINUVxdzhXNGR1V3g5cFQ0SmJSWXlUY0liL055TDltWiszdGlCWW1PQ2xsOW45eTh4eUl0RDUwcDcyVWMzZjJXdHZSOCtlUmdFTFMxOGtOWmdCTEpGdnEwalByZXlkbkg5bVgwS2ozU3RSUktiVHYyYzVrUXJkMkpkTm5Kc090ZWpFcHZ2OWp2RzR5L2pTaHZBMDUxd0lzbkdCOHlPeE43WkJRM1QvcU1oNjQxbk1QTEJjNU5sUnBDUjBjb1Q1V3p4MG9KKzJmb2l4LzUvNlgwZjd2UDdzYVYvTnRYdjVMdDk5MVo5SjdldWVnVHd1L0V4SGlxaEEwTkFRTk1wbFRlcmtidlVWV1B4Q2VYSzJ1NzBMMzlRWUY3bEZLQTRUZGFiOG9zZmcweFBkN3ZvUjh0emtMMU51REFtZU9QTTloNnpETnRSd25vd2NlMEx5cUNzS25aODdiQnhqeklSeG9XdXRhekhKVndjK2NKekMramV3enFLMTQwbWVXUU1FNjBCeUlpVXh0K3JNM0dKc01HMzMyK3VuZXphUjJRQ1c5S0tQQ3NiaTBvYmtaeVVwRTBVY3Z5dkpuK3FROUt3NHp6N2hQaGJyb1pWMXMvMURXVXZIR2tOZm51empMWGV0VGFWbVdxNnlyZjVmRTF4emhNSkhXaGxZQk9jdEFESlR6NTVXYmphT0EydGFlUmFQWEhzTU1VNVgwYzV1eWJEZTIva3IyQVN3MkxjMTJ1Zkdrd052OTBlNklQMzZQdFlFSUFzV3J0ZWUxVy8zUXpqZjhzdkFHa09BZUJoSXBJOWVxVnpuT3c4N3pQQUJqVFhPMzZ0QU1xNzU4RWRZcVhJc1BuWlpyTjh4Mytyc0pFN25yajFtUGVzNGoxejZ2dEhKcnZ4ZHUyNEpIdUwwRlVnM3NZUE1rc1MwL1F2OXNDVE9XdDM4S1piOFdEOUhXREsvam5sbnYxVnZTWnp2OHRES1Rkcm5RKytKY1pDMkNpeWVWbVI5cGNqbTFwMytXUzNxYUJxamhjUDJHVC9UMjF5YkRLc3pYN3pzZ2JzMTA5clo1elA1R21hSnZ4QlhoMXFHWSt0bGRxMDNNWVc5L0NwcTgrYVJENWVBUFg0KzRCWUZkZjhubjhuamYyU3JNNSsramgzYmMxQVVadFZkNDZFaitPallRdEdselVWT1lERm8rdXhrV2l4eEcvbWFDTSt1TFpRK0J5dlg0bWtSTVRDUVJxbGo2L0ZyaE51d25mdEt2elFyaHV2SDdkZURJakhsU2VpUWxtNFhNdHY4aFJ3cFlBajNsRWUvRExscFFXQVY0YVZOK1lYRGpyYXZ5YkRCa1A2UTFwU0g5cmhDcU1qUnhQUFpYdUtReVA2YUNMOTBCMHlEdEZqU0pnNGtvNlBadFZyekE3MTlLaUc4N1k5SmZrdW1kajVwajQ3NVkvdDFJSTBLSDl2cmFGd1JoOVhCRHBkMDlyK2V4Y1F1MXYyVGNUK1pLNXZKWXJMVm5pSm0wdkNweHltMWEybU5pa3hHdFFNSXVHazFtV0dhb3dlZjVlT0FtOVFPMjY5VURzYWdZU3IvMUw0UERob3RQQmFuYTRhZFhOM1huR0w0YUVqOTByTTBuS29GWHc3aTBKNGN5eEVwY3R2Nm5laXNrL0c4Rlp3K0tFK1Q5ZVJwZUVaakRBSGJad0RTNEptZVdyMGljNFBETjVBbkQrZEhXRVRQbk1DOEpzTmtzakRXL2t5NVdFL3NiVEVya0tVUGlxZ3drL2xZODY3TTI3VUgxMlNKRkVsYkIvTThVaGJHZWlMUnlUVStmTXVzZkE2WHRXRXlNWUpDT2FNRGtCbTcyTjYydGpYazhjcEJ4cVU4c3I0QUkyM2xzQlVNbnZKcnNwQ2pnTmRrdUowOERkY1g2eVZZZTdaZU9OYm0yYlUyY1docUVQdWhLMDhlbEtkbjVuSS9BUUlFVis3b2VONWtMWjd4N2t1UWRiRWRPVzBLVUQ5eDU1ZThCWksyTnRnKzlpdjZxZzdsWC9nQThUdStDQ1FZKzg4NjlLVVJiN0FtaHZ3cDJPYlJaSHM1SDBobTQxbjk5SHpleHkxNWtrWExzQ3pQY3VxWHJqZlFhTzJaUnhCSjRtRWdCeXVBcXNKSG9QYTI4UTVHT1J1UmpFMGZsT2Z1ZXVMRnQwemFzZlE0a0o2SjdVbVoySlg2djNYTVNQTHhxUFpSbjI2UFNQak9qMzBVRkg0V0hjdDBCZllKamMvRnZHcU5WNjZjVm9DRkR5N3hkNFU1K0x0UXV5eXNRNUV2ZkJRMDJJOVZSSTd2R2grWmRLdTN4eFdReDZzUTA4RCtMakswWnpIUTUwenNzNG0yR0s2VlArSEwxbkRKckFJSjE3VStFenhoM3B6MVJOekZzY1JubnNYZm4xd3RYY0tyTlVEOSszREdZSC9CK1pOV3NhNHNjeFhZVTV3YjJNblRNQkV6YmUxYWJhN3BlS08xMHJHMTdmeklYa2V0OXBFK2p1YnRqejV4eXltWm5UMCs4VGR5UlFXYTNkcjlmSGtjK3lpQXY3dEduUWxrYkEreDIyczQzRTZOR0ovVFQ2NGQ5c2ZFeDdtQkhGRmU1TnRmWDgrZDVINlpIQnZ1VzRpMVkrdjVlY3R3R2M4ajJodnBQSkNNazNYbThUSHlhUzVNSEV0YlltaDFQZDkwUjlGWDY4WWU0M3k5ZFR1Qm1Pa1YrVTl6OVRYZWR2c0hGcE80dHJLVGQvckprZndwbmJPVzk3T3hEdGEyNituMk92V2t4Z2hFMzVjMW1HNXQ4L1FMdjIrUGlhTjNVZGdFVnAvK3dGNEhlODQvb3hVYjU5ZGpoeG8zam5GOXhMbjFtdDQ3T0Q2L1ZqK0hCd3o4eFJidTlOanQvcW9QSDllNTZ6NUI5bWQ4bk9jV0Z6clk3dHZmOWtoOWV0ampsOWZTK1FmMWJ2Yzl3aWM5UkxCNGZ2RllXTHRQZVdUc2RUY3R6akR5UHhJcjlkNmU1MWg3aCtXL1NQdlVGZ2Y4TFpDcjFYM3UrL1JxU3Rad2k3MElwSDd6VC9LemovOURQTkZkdlNleE44elBNSjN3RzlkeTNScmFzY2VaYSt2VHEyc3ZybUdtSi82S2EzUWc5UmMrdTM1UVJ2cVRNY1ErOU84YmF1WEJPaXlwd1g4cGtHZVZsMlRoOGkxZlZ0U0FvMm42aGtxUUY0WDRiVkZEK0piREJEVFVnRkxldGJ4Nlc0WmxtRlhVRGJVTWk3eE1xbnlKMy9HUERNdXdISGYveUhOM1FicThDOEh5THF4djEyRlozVEozSHZLMmVlYXR5enVRbzc4YXI3eEY4T1I3bk1xTHFBSGxleUFOcytCMnhWQS9iNmdkamlOY1FxOHN0ZGJ4c3lqSk50UU5GV2FlRDhPQUdsVExPcnloNHJ5c1NtcndyMy9mVUlWWHhkU0ErcXRZaGtFQ01LOTRaTjUrZS9PMkROK1REYWEvRE1sWE9HSmVaeFUxWVBCQW1kZEwwQ29HSmlpcDJzMkxHa3RJMDRpNm9WQ0lXb2taS1dtSi9LakQ4bmdpeTU5TzVCbDJrbEEvZjk1UXUwQWxpajNTOXU2aklCSFdaUlV1bGJkMkxvaEQ1TzIvQ25wUDRPa1hRWGR4Q0ZFU1pma3lQSVM4MGdoVHg5WnBESWRBUTI0L0NwZmxWd0FaVWNERzBFK0VKTEJnU2RxVFJsampzdXBZQVFUTi9ZdlNDQWE1S1pFMUJ1emFQVVhXY3RmYWxJb1VsRDZyUkw0MW9oMDJ4aEM0eE8yY2o4dUY3Y0lkRERoOUw0MXFkNWd2TUhSMjJSRk5UaFBGZUEyUWlUdzdocTRvY0I2R0MrSnpvU2JDbTQ4MnZDTDFhM2RHeWdlUmdiUXRpVkJpOTFhanZOWkgycnZCNlZnZXpHOTM2bXVtMmx5UjlBSmtreGNWQlVVZ1ByWi9KWmo1cU4rNDA3eDJzcUpSMSsxZnp3cHFueHRETWVGenQ4Rno0K3hvYkJ1Zys1V1lUS0lwMjY5OHpIZGJpaGdnQ3Npek5oQ3M4eDlxcG5GZ21QOVEwVGoyeUxOZXRjLzl4clBBeTB0R2RHbzU5cmp3T1hPclBNTm4zWjY4cUpuUStHd0JIVzc2b2lLWXV0YnpTa3p5T3BBWURGdC9pQW5QQWxaYnVaS3hhbHVjZi8rOG9aQ1hKZTloV1ZFRDZ2YjI5bnYyZjNvejRxbUQzdlV2M1A2NlhoMitaNGZ2MUFhOUZmTTlTNU1zR1BSbTdaenYyZjRUdXNIM3JOZkRydmJSQnZnOTlQd1FsbVJxcitjVnhjZHp5eUlFWkI1MjlVR3Y4M1E4VklZd0JGVysvQjA2dlI2T20vMld0enNPNDZvcTJwSDIvYUNINDJvL1VubkxLS3plTHNhTFpWN2xJSWVEM2x4OCs1NTlWYTFuWjNlbm12V0tvdnpyb042bmJ1NFhOWXpmbDRXSEdUck9sMytvL0YyK0t3Yzk5b3Jpa1ZlQldEMm0rcWt4OXRyWVV6Z1dEZi9BVTJxZjB1djFPbDd4VDFlYWprbnNqWDYyc1AwaGRXdlErMXZGYUhBb1FoZWszN3B5T09nTjRkcHJ5dU1weDc1NVlQZWt3SjY2SVA3cGFzN1p3bjFkT1J2dTlVQlJEM3JmU1pYNVRwMi9iSXNPZmsrcXp2bUV0cVo5UkJKWHVGK1JaS1F6Z3N2UUM1SXNMTXUzWmU2SFoyUXJVTXh5a0liVnhYYkZWVVgwZWttV1ZJa0huMExvTmJNUTVGbFFEbm9NZnpxcENKZEpIblN2T2ZwN2Rqd0JKcXZ3ZjVramp2NlVvNjhtaytNVHE5Tk1rb1hWT2wrbVNSYmRwWS9sWFpJZnBSV2xYZlhGbk9KbFdWNlJUNC8zamtBQTFkMmVoN1QydzJVV1ZpSFpyVmptbStiV3o0UG10a3kyNGJubmZiNFUrOGh0bGFBd3J5dTgrb0dtZjM5eGllUHdUeGVEUE10Q1VGMVozMldaM1hKeGp5NEhMVm1TTEdzWUhnb05MakZIWG9QaDVHa1kzWkl4dk1jZWRaNUgwaDZDRG5vdEFqMTl1MHM2RjU2NXE5NFg0NS9iK1lxSFh3NzNlbG1OL0hDNWQvN2pMK09aRzZxclA5U0FPZ0hzUC85L0FBQUEvLytZU2lQUGd6QUFBQT09
+  kind: Secret
+  metadata:
+    creationTimestamp: "2025-12-12T19:18:06Z"
+    labels:
+      modifiedAt: "1765567086"
+      name: credit-fraud-inference
+      owner: helm
+      status: deployed
+      version: "1"
+    name: sh.helm.release.v1.credit-fraud-inference.v1
+    namespace: ml-inference
+    resourceVersion: "15179"
+    uid: bd38454b-5e13-4c5d-8815-537ef15cf80e
+  type: helm.sh/release.v1
+kind: List
+metadata:
+  resourceVersion: ""
+\n### ML-INFERENCE: events
+LAST SEEN   TYPE     REASON    OBJECT                                       MESSAGE
+8m44s       Normal   Killing   pod/credit-fraud-inference-f567574bc-hfb28   Stopping container inference
+8m44s       Normal   Killing   pod/credit-fraud-inference-f567574bc-xsp89   Stopping container inference
