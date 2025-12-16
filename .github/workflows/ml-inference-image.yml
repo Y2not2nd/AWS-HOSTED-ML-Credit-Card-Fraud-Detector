@@ -58,7 +58,8 @@ jobs:
             --build-arg BENTO_S3_PREFIX=${{ steps.model.outputs.bento_prefix }} \
             -t ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }} \
             -t ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7} \
-            inference/
+            ml-inference-final/
+
 
       - name: Push image to ECR
         run: |
