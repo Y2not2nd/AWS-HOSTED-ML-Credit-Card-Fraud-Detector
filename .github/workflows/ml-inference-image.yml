@@ -12,6 +12,8 @@ env:
   ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
   MODEL_BUCKET: ${{ vars.MODEL_BUCKET }}
   CANDIDATE_KEY: ${{ vars.CANDIDATE_KEY }}
+  K8S_NAMESPACE: ml-inference
+  APP_NAME: credit-fraud-inference
 
 jobs:
   build-and-push:
@@ -60,9 +62,39 @@ jobs:
             -t "${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7}" \
             ml-inference-final
 
-
-
       - name: Push image to ECR
         run: |
           docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}
           docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7}
+
+      # -------------------------------
+      # Blue Green deploy step
+      # -------------------------------
+
+      - name: Deploy to inactive colour in Kubernetes
+        env:
+          IMAGE_TAG: ${{ steps.model.outputs.image_tag }}
+        run: |
+          ACTIVE_COLOR=$(kubectl get svc ${APP_NAME} \
+            -n ${K8S_NAMESPACE} \
+            -o jsonpath='{.spec.selector.color}')
+
+          if [ "$ACTIVE_COLOR" = "blue" ]; then
+            NEW_COLOR="green"
+          else
+            NEW_COLOR="blue"
+          fi
+
+          echo "Active colour: $ACTIVE_COLOR"
+          echo "Deploying to inactive colour: $NEW_COLOR"
+
+          kubectl set image deployment/${APP_NAME}-${NEW_COLOR} \
+            inference=${ECR_REPOSITORY}:${IMAGE_TAG} \
+            -n ${K8S_NAMESPACE}
+
+          kubectl rollout status deployment/${APP_NAME}-${NEW_COLOR} \
+            -n ${K8S_NAMESPACE}
+
+          kubectl patch svc ${APP_NAME} \
+            -n ${K8S_NAMESPACE} \
+            -p "{\"spec\":{\"selector\":{\"app\":\"${APP_NAME}\",\"color\":\"${NEW_COLOR}\"}}}"
