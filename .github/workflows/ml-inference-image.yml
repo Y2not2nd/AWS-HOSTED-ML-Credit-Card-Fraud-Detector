@@ -54,11 +54,12 @@ jobs:
       - name: Build inference image
         run: |
           docker build \
-            --build-arg BENTO_S3_BUCKET=${MODEL_BUCKET} \
-            --build-arg BENTO_S3_PREFIX=${{ steps.model.outputs.bento_prefix }} \
-            -t ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }} \
-            -t ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7} \
-            ml-inference-final/
+            --build-arg BENTO_S3_BUCKET="${MODEL_BUCKET}" \
+            --build-arg BENTO_S3_PREFIX="${{ steps.model.outputs.bento_prefix }}" \
+            -t "${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}" \
+            -t "${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7}" \
+            ml-inference-final
+
 
 
       - name: Push image to ECR
