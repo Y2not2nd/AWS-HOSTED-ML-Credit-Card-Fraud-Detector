@@ -14,6 +14,7 @@ env:
   CANDIDATE_KEY: ${{ vars.CANDIDATE_KEY }}
   K8S_NAMESPACE: ml-inference
   APP_NAME: credit-fraud-inference
+  EKS_CLUSTER_NAME: YAS-ML-EKS
 
 jobs:
   build-and-push:
@@ -67,10 +68,18 @@ jobs:
           docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}
           docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7}
 
-      # -------------------------------
-      # Blue Green deploy step
-      # -------------------------------
+      # --------------------------------
+      # Configure kubectl for EKS
+      # --------------------------------
+      - name: Configure kubectl
+        run: |
+          aws eks update-kubeconfig \
+            --region ${AWS_REGION} \
+            --name ${EKS_CLUSTER_NAME}
 
+      # --------------------------------
+      # Blue Green deployment
+      # --------------------------------
       - name: Deploy to inactive colour in Kubernetes
         env:
           IMAGE_TAG: ${{ steps.model.outputs.image_tag }}
