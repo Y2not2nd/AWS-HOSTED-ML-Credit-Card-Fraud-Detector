@@ -18,7 +18,7 @@ env:
   ROLLOUT_TIMEOUT: 300s
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment: ml-platform
 
@@ -31,6 +31,9 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
@@ -58,16 +61,13 @@ jobs:
           docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}
           docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7}
 
-      - name: Configure kubectl
+      - name: Configure kubectl for EKS
         run: |
           aws eks update-kubeconfig \
             --region ${AWS_REGION} \
             --name ${EKS_CLUSTER_NAME}
 
-      # --------------------------------------------------
-      # Blue Green Deployment (HARDENED)
-      # --------------------------------------------------
-      - name: Deploy to inactive colour safely
+      - name: Blue green deploy to inactive colour
         env:
           IMAGE_TAG: ${{ steps.model.outputs.image_tag }}
         run: |
@@ -88,9 +88,7 @@ jobs:
           echo "Active colour: $ACTIVE_COLOR"
           echo "Deploying to inactive colour: $NEW_COLOR"
 
-          echo "Resetting inactive deployment to clean state"
-          kubectl rollout undo deployment/${DEPLOYMENT} -n ${K8S_NAMESPACE} || true
-
+          echo "Updating image on ${DEPLOYMENT}"
           kubectl set image deployment/${DEPLOYMENT} \
             inference=${ECR_REPOSITORY}:${IMAGE_TAG} \
             -n ${K8S_NAMESPACE}
@@ -100,12 +98,12 @@ jobs:
             -n ${K8S_NAMESPACE} \
             --timeout=${ROLLOUT_TIMEOUT}; then
 
-            echo "❌ Rollout failed. Rolling back."
+            echo "Rollout failed, rolling back"
             kubectl rollout undo deployment/${DEPLOYMENT} -n ${K8S_NAMESPACE}
             exit 1
           fi
 
-          echo "✅ Rollout succeeded. Switching Service."
+          echo "Rollout successful, switching Service"
 
           kubectl patch svc ${APP_NAME} \
             -n ${K8S_NAMESPACE} \
