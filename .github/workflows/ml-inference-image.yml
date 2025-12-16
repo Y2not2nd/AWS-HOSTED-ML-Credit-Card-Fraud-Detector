@@ -15,6 +15,7 @@ env:
   K8S_NAMESPACE: ml-inference
   APP_NAME: credit-fraud-inference
   EKS_CLUSTER_NAME: YAS-ML-EKS
+  ROLLOUT_TIMEOUT: 300s
 
 jobs:
   build-and-push:
@@ -31,9 +32,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
-
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
@@ -42,23 +40,15 @@ jobs:
         run: |
           aws s3 cp s3://${MODEL_BUCKET}/${CANDIDATE_KEY} candidate.json
 
-          MODEL_NAME=$(jq -r '.model' candidate.json)
           MODEL_TAG=$(jq -r '.tag' candidate.json)
-          BENTO_PREFIX=$(jq -r '.bento_s3_prefix' candidate.json)
-
           SHORT_TAG=${MODEL_TAG#*:}
           IMAGE_TAG="credit-fraud-${SHORT_TAG}"
 
-          echo "model_name=${MODEL_NAME}" >> $GITHUB_OUTPUT
-          echo "model_tag=${MODEL_TAG}" >> $GITHUB_OUTPUT
-          echo "bento_prefix=${BENTO_PREFIX}" >> $GITHUB_OUTPUT
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
       - name: Build inference image
         run: |
           docker build \
-            --build-arg BENTO_S3_BUCKET="${MODEL_BUCKET}" \
-            --build-arg BENTO_S3_PREFIX="${{ steps.model.outputs.bento_prefix }}" \
             -t "${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}" \
             -t "${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7}" \
             ml-inference-final
@@ -68,22 +58,21 @@ jobs:
           docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}
           docker push ${ECR_REPOSITORY}:${{ steps.model.outputs.image_tag }}-${GITHUB_SHA::7}
 
-      # --------------------------------
-      # Configure kubectl for EKS
-      # --------------------------------
       - name: Configure kubectl
         run: |
           aws eks update-kubeconfig \
             --region ${AWS_REGION} \
             --name ${EKS_CLUSTER_NAME}
 
-      # --------------------------------
-      # Blue Green deployment
-      # --------------------------------
-      - name: Deploy to inactive colour in Kubernetes
+      # --------------------------------------------------
+      # Blue Green Deployment (HARDENED)
+      # --------------------------------------------------
+      - name: Deploy to inactive colour safely
         env:
           IMAGE_TAG: ${{ steps.model.outputs.image_tag }}
         run: |
+          set -euo pipefail
+
           ACTIVE_COLOR=$(kubectl get svc ${APP_NAME} \
             -n ${K8S_NAMESPACE} \
             -o jsonpath='{.spec.selector.color}')
@@ -94,15 +83,29 @@ jobs:
             NEW_COLOR="blue"
           fi
 
+          DEPLOYMENT="${APP_NAME}-${NEW_COLOR}"
+
           echo "Active colour: $ACTIVE_COLOR"
           echo "Deploying to inactive colour: $NEW_COLOR"
 
-          kubectl set image deployment/${APP_NAME}-${NEW_COLOR} \
+          echo "Resetting inactive deployment to clean state"
+          kubectl rollout undo deployment/${DEPLOYMENT} -n ${K8S_NAMESPACE} || true
+
+          kubectl set image deployment/${DEPLOYMENT} \
             inference=${ECR_REPOSITORY}:${IMAGE_TAG} \
             -n ${K8S_NAMESPACE}
 
-          kubectl rollout status deployment/${APP_NAME}-${NEW_COLOR} \
-            -n ${K8S_NAMESPACE}
+          echo "Waiting for rollout to complete"
+          if ! kubectl rollout status deployment/${DEPLOYMENT} \
+            -n ${K8S_NAMESPACE} \
+            --timeout=${ROLLOUT_TIMEOUT}; then
+
+            echo "❌ Rollout failed. Rolling back."
+            kubectl rollout undo deployment/${DEPLOYMENT} -n ${K8S_NAMESPACE}
+            exit 1
+          fi
+
+          echo "✅ Rollout succeeded. Switching Service."
 
           kubectl patch svc ${APP_NAME} \
             -n ${K8S_NAMESPACE} \
